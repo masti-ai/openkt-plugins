@@ -1,0 +1,21 @@
+{
+  "name": "openkt",
+  "plugins": [
+    {
+      "name": "openkt",
+      "source": {
+        "source": "local",
+        "path": "./codex/openkt"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity",
+      "interface": {
+        "displayName": "OpenKT",
+        "shortDescription": "Persistent memory + standing context for Codex"
+      }
+    }
+  ]
+}

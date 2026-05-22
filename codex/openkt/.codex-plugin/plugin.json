@@ -1,12 +1,31 @@
 {
   "name": "openkt",
   "version": "0.1.0",
-  "description": "OpenKT (Open Knowledge Transfer) — persistent memory layer for Codex agents. SessionStart + UserPromptSubmit hooks only (Codex doesn't fire PostToolUse / PreCompact). Bring the kt CLI to drive auth + project binding.",
+  "description": "OpenKT (Open Knowledge Transfer) — persistent memory layer for Codex agents. SessionStart + UserPromptSubmit hooks. Bring the kt CLI to drive auth + project binding.",
   "author": {
     "name": "Deepwork Labs",
     "url": "https://openkt.ai"
   },
   "homepage": "https://openkt.ai",
+  "repository": "https://github.com/masti-ai/openkt-plugins",
   "license": "Apache-2.0",
-  "hooks": "./hooks/hooks.json"
+  "keywords": [
+    "memory",
+    "context",
+    "knowledge-transfer",
+    "mcp",
+    "agent-memory"
+  ],
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "OpenKT",
+    "shortDescription": "Persistent memory + standing context for Codex",
+    "longDescription": "OpenKT captures decisions, anti-patterns, and non-obvious project facts across sessions, then auto-injects the most relevant ones into every prompt via SessionStart and UserPromptSubmit hooks. Works alongside the kt CLI for authentication and project binding.",
+    "category": "productivity",
+    "capabilities": ["memory", "recall", "context", "mcp"],
+    "developerName": "Deepwork Labs",
+    "websiteURL": "https://openkt.ai",
+    "privacyPolicyURL": "https://openkt.ai/privacy",
+    "termsOfServiceURL": "https://openkt.ai/terms"
+  }
 }
