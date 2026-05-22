@@ -1,0 +1,40 @@
+{
+  "summary": {
+    "passed": 4,
+    "failed": 2,
+    "total": 6,
+    "pass_rate": 0.6667
+  },
+  "expectations": [
+    {
+      "text": "DIRECTIONS.md was NOT modified (byte-identical to input)",
+      "passed": true,
+      "evidence": "post-state matches input exactly"
+    },
+    {
+      "text": "Reply renders existing pool headers (Pool 1, Pool 2)",
+      "passed": true,
+      "evidence": "Pool 1 in reply: True; Pool 2 in reply: True"
+    },
+    {
+      "text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)",
+      "passed": false,
+      "evidence": "1 status-flag tokens preserved in reply"
+    },
+    {
+      "text": "Reply contains the leading-edge synthesis from DIRECTIONS.md",
+      "passed": true,
+      "evidence": "matched 'leading edge'"
+    },
+    {
+      "text": "No drift flag in reply (this is a query, not a new direction)",
+      "passed": true,
+      "evidence": "no drift markers found"
+    },
+    {
+      "text": "Reply ends with an orientation question",
+      "passed": false,
+      "evidence": "no orientation question"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "summary": {
+    "passed": 5,
+    "failed": 2,
+    "total": 7,
+    "pass_rate": 0.7143
+  },
+  "expectations": [
+    {
+      "text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)",
+      "passed": false,
+      "evidence": "found 1 pool heading(s); expected 4 (original Pool 1 + 3 new)"
+    },
+    {
+      "text": "Pool 1 (CLI auth refactor) is preserved unchanged",
+      "passed": true,
+      "evidence": "Pool 1 + CLI/auth still present"
+    },
+    {
+      "text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)",
+      "passed": false,
+      "evidence": "0 drift-marker occurrence(s) (consolidated if 1-4)"
+    },
+    {
+      "text": "Consolidated note mentions all three new pools by name",
+      "passed": true,
+      "evidence": "analytics=True, design=True, deploy=True"
+    },
+    {
+      "text": "Reply asks which is the new leading edge or acknowledges all three threads",
+      "passed": true,
+      "evidence": "matched orientation prompt 'which'"
+    },
+    {
+      "text": "Each new pool has a one-line theme description",
+      "passed": true,
+      "evidence": "theme italic lines present in DIRECTIONS.md"
+    },
+    {
+      "text": "Each new pool entry has a status flag",
+      "passed": true,
+      "evidence": "status flags present"
+    }
+  ]
+}

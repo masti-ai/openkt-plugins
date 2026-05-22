@@ -1,0 +1,45 @@
+{
+  "summary": {
+    "passed": 7,
+    "failed": 0,
+    "total": 7,
+    "pass_rate": 1.0
+  },
+  "expectations": [
+    {
+      "text": "DIRECTIONS.md was created at project root (file didn't exist before)",
+      "passed": true,
+      "evidence": "output DIRECTIONS.md is 1650 bytes (input was 0)"
+    },
+    {
+      "text": "DIRECTIONS.md contains at least 2 distinct pools",
+      "passed": true,
+      "evidence": "found 2 pool heading(s)"
+    },
+    {
+      "text": "One pool captures the CLI auth refactor (from history)",
+      "passed": true,
+      "evidence": "matched 'CLI'"
+    },
+    {
+      "text": "One pool captures the marketing landing thread (new)",
+      "passed": true,
+      "evidence": "matched 'marketing'"
+    },
+    {
+      "text": "Reply text contains an inline drift flag mentioning the new pool",
+      "passed": true,
+      "evidence": "matched drift marker 'Note:'"
+    },
+    {
+      "text": "Reply still answers the hero image question (drift flag doesn't block)",
+      "passed": true,
+      "evidence": "reply discusses hero/image (matched 'hero')"
+    },
+    {
+      "text": "Pool entries include at least one status flag",
+      "passed": true,
+      "evidence": "status flags present"
+    }
+  ]
+}

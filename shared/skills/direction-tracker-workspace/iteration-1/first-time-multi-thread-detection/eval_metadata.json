@@ -1,0 +1,14 @@
+{
+  "eval_id": 1,
+  "eval_name": "first-time-multi-thread-detection",
+  "prompt": "I've been working on the CLI auth refactor for a while and just got it tested end-to-end. While we're here, let me also start thinking about the marketing landing page redesign for next quarter. Where should the hero image go?",
+  "assertions": [
+    {"text": "DIRECTIONS.md was created at project root (file didn't exist before)"},
+    {"text": "DIRECTIONS.md contains at least 2 distinct pools"},
+    {"text": "One pool captures the CLI auth refactor (from history)"},
+    {"text": "One pool captures the marketing landing thread (new)"},
+    {"text": "Reply text contains an inline drift flag mentioning the new pool"},
+    {"text": "Reply text still answers the hero image question (drift flag doesn't block the answer)"},
+    {"text": "Pool entries include at least one status flag (LEADING/PARKED/SEED/etc.)"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "explicit-pool-view-query",
+  "prompt": "where am I in all this? what was I working on?",
+  "assertions": [
+    {"text": "DIRECTIONS.md was NOT modified (byte-identical to input)"},
+    {"text": "Reply renders existing pool headers (Pool 1, Pool 2)"},
+    {"text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)"},
+    {"text": "Reply contains the leading-edge synthesis from DIRECTIONS.md"},
+    {"text": "No drift flag in reply (this is a query, not a new direction)"},
+    {"text": "Reply ends with an orientation question (e.g., 'refocus or stay')"}
+  ]
+}

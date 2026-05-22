@@ -1,0 +1,14 @@
+{
+  "eval_id": 4,
+  "eval_name": "bulk-multi-direction-prompt",
+  "prompt": "Let me also start on analytics for the landing page, AND we should sync with the design team about the new brand colors, and oh I also want to fix the deployment pipeline that's been flaky.",
+  "assertions": [
+    {"text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)"},
+    {"text": "Pool 1 (CLI auth refactor) is preserved unchanged"},
+    {"text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)"},
+    {"text": "Consolidated note mentions all three new pools by name"},
+    {"text": "Reply asks which is the new leading edge or acknowledges all three threads"},
+    {"text": "Each new pool has a one-line theme description"},
+    {"text": "Each new pool entry has a status flag (SEED/RESEARCH/LEADING/etc.)"}
+  ]
+}

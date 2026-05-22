@@ -1,0 +1,13 @@
+{
+  "eval_id": 3,
+  "eval_name": "same-pool-subthread-no-drift",
+  "prompt": "Now let me also fix the JWT refresh edge case where the token is rotated mid-request. We're already in the auth refactor, this should slot in.",
+  "assertions": [
+    {"text": "DIRECTIONS.md was modified (a new entry was added)"},
+    {"text": "The new entry was added UNDER Pool 1 (auth refactor) — NOT as a new pool"},
+    {"text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)"},
+    {"text": "No drift flag in reply (sub-thread of leading pool — should not flag)"},
+    {"text": "Reply answers the JWT-refresh question normally"},
+    {"text": "New entry has a status flag (likely LEADING since it's active sub-thread)"}
+  ]
+}

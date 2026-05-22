@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "direction-tracker", "runs": [{"id": "eval-1-with_skill", "prompt": "I've been working on the CLI auth refactor for a while and just got it tested end-to-end. While we're here, let me also start thinking about the marketing landing page redesign for next quarter. Where should the hero image go?", "eval_id": 1, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 active threads (living doc)\n\n**Last updated:** 2026-05-22\n\n**Purpose:** Step-back view of every direction this conversation has been pulled in, grouped into themes (pools), with status flags. Read this any time to see where attention is and what's parked.\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: kt CLI Go binary auth refactor \u2014 MCP serve mode and multi-signal doctor, just tested end-to-end against real Claude Code.*\n\n- kt CLI Go binary auth refactor \u2014 `LEADING`\n- MCP serve mode \u2014 `LEADING`\n- Multi-signal `doctor` command \u2014 `LEADING`\n- PR #30 \u2014 `DONE` (tested end-to-end against real Claude Code, earlier in session 2026-05-22)\n\n## Pool 2 \u2014 Marketing landing page redesign\n*Theme: \"marketing landing page redesign for next quarter\" \u2014 early thinking, hero image placement first question.*\n\n- Hero image placement \u2014 `SEED` (opened 2026-05-22)\n- Overall landing redesign for next quarter \u2014 `SEED`\n\n## What's drifting\n\n(Drift = mentioned but no follow-up across recent turns)\n\n- _none yet_\n\n## What's the leading edge right now?\n\nUser's most recent direction-setting framing: *\"I've been working on the CLI auth refactor for a while and just got it tested end-to-end. While we're here, let me also start thinking about the marketing landing page redesign for next quarter.\"*\n\nSo **Pool 1 (CLI auth refactor)** is still the leading edge \u2014 PR #30 just landed end-to-end testing. Pool 2 (Marketing landing) was opened in the same turn as a parallel `SEED`; user hasn't signaled a focus shift, just wants to \"start thinking.\"\n\n## Drift sensitivity\n\nCalibration: medium (default)\nSet by: system default \u2014 first session, no user override yet\n"}, {"name": "reply.md", "type": "text", "content": "> Note: you're currently on Pool 1 (CLI auth refactor \u2014 PR #30 just tested end-to-end). This prompt is pulling toward a new Pool 2 (Marketing landing page redesign). I'll add it as `SEED` \u2014 say \"pivot\" to switch focus, or \"park it\" to come back later. Seeded a fresh `DIRECTIONS.md` at the project root since this is the first multi-thread moment in this session.\n\nOn the hero image: above the fold, anchored to the visual center-left if your headline reads left-to-right (gives the eye a natural F-pattern entry), or full-bleed background behind the headline if the image is more atmosphere than product. A few quick heuristics for next-quarter planning:\n\n- **Product-led landing** \u2014 hero image is the product screenshot or a tight crop of the most distinctive UI surface. Place it right of the headline on desktop, below on mobile. Keep it sharp; lossy JPEG kills trust on a hero.\n- **Story-led landing** \u2014 hero image is a person, scene, or texture. Full-bleed behind the headline with a dark gradient overlay so the type stays readable. No CTA inside the image \u2014 keep the CTA on solid background below.\n- **Abstract / brand-led landing** \u2014 hero is a generated/illustrated mark. Center it, give it whitespace, let the headline carry the weight.\n\nWhichever direction you pick, the placement question is downstream of \"what is the hero image *doing*\" \u2014 sell the product, tell the story, or set the brand tone. Want me to park this and come back when you've picked the angle, or keep pulling on the thread now?\n"}], "grading": {"summary": {"passed": 7, "failed": 0, "total": 7, "pass_rate": 1.0}, "expectations": [{"text": "DIRECTIONS.md was created at project root (file didn't exist before)", "passed": true, "evidence": "output DIRECTIONS.md is 1650 bytes (input was 0)"}, {"text": "DIRECTIONS.md contains at least 2 distinct pools", "passed": true, "evidence": "found 2 pool heading(s)"}, {"text": "One pool captures the CLI auth refactor (from history)", "passed": true, "evidence": "matched 'CLI'"}, {"text": "One pool captures the marketing landing thread (new)", "passed": true, "evidence": "matched 'marketing'"}, {"text": "Reply text contains an inline drift flag mentioning the new pool", "passed": true, "evidence": "matched drift marker 'Note:'"}, {"text": "Reply still answers the hero image question (drift flag doesn't block)", "passed": true, "evidence": "reply discusses hero/image (matched 'hero')"}, {"text": "Pool entries include at least one status flag", "passed": true, "evidence": "status flags present"}]}}, {"id": "eval-1-without_skill", "prompt": "I've been working on the CLI auth refactor for a while and just got it tested end-to-end. While we're here, let me also start thinking about the marketing landing page redesign for next quarter. Where should the hero image go?", "eval_id": 1, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": ""}, {"name": "reply.md", "type": "text", "content": "For a marketing landing page, the hero image typically goes:\n\n- **Above the fold**, right side or centered, paired with the headline/CTA on the left (or below if centered).\n- Common pattern: H1 + subhead + CTA on the left half, hero visual on the right half (desktop); stacked on mobile with visual below the copy.\n- If the product is visual-first (screenshots, product shots), make the hero image dominant. If it's concept-first, keep it secondary to the headline.\n\nWant me to sketch a layout, or are you looking for a specific framework recommendation (e.g., Next.js + Tailwind, Framer, Webflow)?\n"}], "grading": {"summary": {"passed": 1, "failed": 6, "total": 7, "pass_rate": 0.1429}, "expectations": [{"text": "DIRECTIONS.md was created at project root (file didn't exist before)", "passed": false, "evidence": "output DIRECTIONS.md is 0 bytes (input was 0)"}, {"text": "DIRECTIONS.md contains at least 2 distinct pools", "passed": false, "evidence": "found 0 pool heading(s)"}, {"text": "One pool captures the CLI auth refactor (from history)", "passed": false, "evidence": "no CLI/auth match in DIRECTIONS.md"}, {"text": "One pool captures the marketing landing thread (new)", "passed": false, "evidence": "no marketing/landing match"}, {"text": "Reply text contains an inline drift flag mentioning the new pool", "passed": false, "evidence": "no drift flag in reply"}, {"text": "Reply still answers the hero image question (drift flag doesn't block)", "passed": true, "evidence": "reply discusses hero/image (matched 'hero')"}, {"text": "Pool entries include at least one status flag", "passed": false, "evidence": "no `LEADING`/`SEED`/etc. found"}]}}, {"id": "first-time-multi-thread-detection-with_skill", "prompt": "I've been working on the CLI auth refactor for a while and just got it tested end-to-end. While we're here, let me also start thinking about the marketing landing page redesign for next quarter. Where should the hero image go?", "eval_id": 1, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 active threads (living doc)\n\n**Last updated:** 2026-05-22\n\n**Purpose:** Step-back view of every direction this conversation has been pulled in, grouped into themes (pools), with status flags. Read this any time to see where attention is and what's parked.\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: kt CLI Go binary auth refactor \u2014 MCP serve mode and multi-signal doctor, just tested end-to-end against real Claude Code.*\n\n- kt CLI Go binary auth refactor \u2014 `LEADING`\n- MCP serve mode \u2014 `LEADING`\n- Multi-signal `doctor` command \u2014 `LEADING`\n- PR #30 \u2014 `DONE` (tested end-to-end against real Claude Code, earlier in session 2026-05-22)\n\n## Pool 2 \u2014 Marketing landing page redesign\n*Theme: \"marketing landing page redesign for next quarter\" \u2014 early thinking, hero image placement first question.*\n\n- Hero image placement \u2014 `SEED` (opened 2026-05-22)\n- Overall landing redesign for next quarter \u2014 `SEED`\n\n## What's drifting\n\n(Drift = mentioned but no follow-up across recent turns)\n\n- _none yet_\n\n## What's the leading edge right now?\n\nUser's most recent direction-setting framing: *\"I've been working on the CLI auth refactor for a while and just got it tested end-to-end. While we're here, let me also start thinking about the marketing landing page redesign for next quarter.\"*\n\nSo **Pool 1 (CLI auth refactor)** is still the leading edge \u2014 PR #30 just landed end-to-end testing. Pool 2 (Marketing landing) was opened in the same turn as a parallel `SEED`; user hasn't signaled a focus shift, just wants to \"start thinking.\"\n\n## Drift sensitivity\n\nCalibration: medium (default)\nSet by: system default \u2014 first session, no user override yet\n"}, {"name": "reply.md", "type": "text", "content": "> Note: you're currently on Pool 1 (CLI auth refactor \u2014 PR #30 just tested end-to-end). This prompt is pulling toward a new Pool 2 (Marketing landing page redesign). I'll add it as `SEED` \u2014 say \"pivot\" to switch focus, or \"park it\" to come back later. Seeded a fresh `DIRECTIONS.md` at the project root since this is the first multi-thread moment in this session.\n\nOn the hero image: above the fold, anchored to the visual center-left if your headline reads left-to-right (gives the eye a natural F-pattern entry), or full-bleed background behind the headline if the image is more atmosphere than product. A few quick heuristics for next-quarter planning:\n\n- **Product-led landing** \u2014 hero image is the product screenshot or a tight crop of the most distinctive UI surface. Place it right of the headline on desktop, below on mobile. Keep it sharp; lossy JPEG kills trust on a hero.\n- **Story-led landing** \u2014 hero image is a person, scene, or texture. Full-bleed behind the headline with a dark gradient overlay so the type stays readable. No CTA inside the image \u2014 keep the CTA on solid background below.\n- **Abstract / brand-led landing** \u2014 hero is a generated/illustrated mark. Center it, give it whitespace, let the headline carry the weight.\n\nWhichever direction you pick, the placement question is downstream of \"what is the hero image *doing*\" \u2014 sell the product, tell the story, or set the brand tone. Want me to park this and come back when you've picked the angle, or keep pulling on the thread now?\n"}], "grading": {"summary": {"passed": 7, "failed": 0, "total": 7, "pass_rate": 1.0}, "expectations": [{"text": "DIRECTIONS.md was created at project root (file didn't exist before)", "passed": true, "evidence": "output DIRECTIONS.md is 1650 bytes (input was 0)"}, {"text": "DIRECTIONS.md contains at least 2 distinct pools", "passed": true, "evidence": "found 2 pool heading(s)"}, {"text": "One pool captures the CLI auth refactor (from history)", "passed": true, "evidence": "matched 'CLI'"}, {"text": "One pool captures the marketing landing thread (new)", "passed": true, "evidence": "matched 'marketing'"}, {"text": "Reply text contains an inline drift flag mentioning the new pool", "passed": true, "evidence": "matched drift marker 'Note:'"}, {"text": "Reply still answers the hero image question (drift flag doesn't block)", "passed": true, "evidence": "reply discusses hero/image (matched 'hero')"}, {"text": "Pool entries include at least one status flag", "passed": true, "evidence": "status flags present"}]}}, {"id": "first-time-multi-thread-detection-without_skill", "prompt": "I've been working on the CLI auth refactor for a while and just got it tested end-to-end. While we're here, let me also start thinking about the marketing landing page redesign for next quarter. Where should the hero image go?", "eval_id": 1, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": ""}, {"name": "reply.md", "type": "text", "content": "For a marketing landing page, the hero image typically goes:\n\n- **Above the fold**, right side or centered, paired with the headline/CTA on the left (or below if centered).\n- Common pattern: H1 + subhead + CTA on the left half, hero visual on the right half (desktop); stacked on mobile with visual below the copy.\n- If the product is visual-first (screenshots, product shots), make the hero image dominant. If it's concept-first, keep it secondary to the headline.\n\nWant me to sketch a layout, or are you looking for a specific framework recommendation (e.g., Next.js + Tailwind, Framer, Webflow)?\n"}], "grading": {"summary": {"passed": 1, "failed": 6, "total": 7, "pass_rate": 0.1429}, "expectations": [{"text": "DIRECTIONS.md was created at project root (file didn't exist before)", "passed": false, "evidence": "output DIRECTIONS.md is 0 bytes (input was 0)"}, {"text": "DIRECTIONS.md contains at least 2 distinct pools", "passed": false, "evidence": "found 0 pool heading(s)"}, {"text": "One pool captures the CLI auth refactor (from history)", "passed": false, "evidence": "no CLI/auth match in DIRECTIONS.md"}, {"text": "One pool captures the marketing landing thread (new)", "passed": false, "evidence": "no marketing/landing match"}, {"text": "Reply text contains an inline drift flag mentioning the new pool", "passed": false, "evidence": "no drift flag in reply"}, {"text": "Reply still answers the hero image question (drift flag doesn't block)", "passed": true, "evidence": "reply discusses hero/image (matched 'hero')"}, {"text": "Pool entries include at least one status flag", "passed": false, "evidence": "no `LEADING`/`SEED`/etc. found"}]}}, {"id": "eval-2-with_skill", "prompt": "where am I in all this? what was I working on?", "eval_id": 2, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `DONE`\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## Pool 2 \u2014 Marketing landing redesign\n*Theme: rework the openkt.ai landing for Q3 launch.*\n\n- Hero image direction \u2014 `SEED`\n\n## What's the leading edge right now?\n\n\"Just focus on the plugin so installation is easier\" \u2014 Pool 1.\n"}, {"name": "reply.md", "type": "text", "content": "Here's where you are (from DIRECTIONS.md, last updated 2026-05-22):\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `DONE`\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## Pool 2 \u2014 Marketing landing redesign\n*Theme: rework the openkt.ai landing for Q3 launch.*\n\n- Hero image direction \u2014 `SEED`\n\n## What's the leading edge right now?\n\n\"Just focus on the plugin so installation is easier\" \u2014 **Pool 1**. PR #30 is open and awaiting merge; Pool 2 (landing redesign) is a parked seed.\n\n---\n\nWant to refocus on Pool 2, or stay on the current edge (PR #30)?\n"}], "grading": {"summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}, "expectations": [{"text": "DIRECTIONS.md was NOT modified (byte-identical to input)", "passed": true, "evidence": "post-state matches input exactly"}, {"text": "Reply renders existing pool headers (Pool 1, Pool 2)", "passed": true, "evidence": "Pool 1 in reply: True; Pool 2 in reply: True"}, {"text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)", "passed": true, "evidence": "3 status-flag tokens preserved in reply"}, {"text": "Reply contains the leading-edge synthesis from DIRECTIONS.md", "passed": true, "evidence": "matched 'leading edge'"}, {"text": "No drift flag in reply (this is a query, not a new direction)", "passed": true, "evidence": "no drift markers found"}, {"text": "Reply ends with an orientation question", "passed": true, "evidence": "ends with '?' or orientation cue"}]}}, {"id": "eval-2-without_skill", "prompt": "where am I in all this? what was I working on?", "eval_id": 2, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `DONE`\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## Pool 2 \u2014 Marketing landing redesign\n*Theme: rework the openkt.ai landing for Q3 launch.*\n\n- Hero image direction \u2014 `SEED`\n\n## What's the leading edge right now?\n\n\"Just focus on the plugin so installation is easier\" \u2014 Pool 1.\n"}, {"name": "reply.md", "type": "text", "content": "You've got two pools going:\n\n**Pool 1 \u2014 CLI auth refactor** (leading edge)\n- Non-interactive flags: DONE\n- `kt mcp serve` with 11 tools: DONE\n- PR #30 awaiting merge\n\n**Pool 2 \u2014 Marketing landing redesign**\n- Hero image direction: just a seed\n\nYour stated focus right now: \"Just focus on the plugin so installation is easier\" \u2014 i.e., Pool 1. Next concrete action is getting PR #30 merged.\n"}], "grading": {"summary": {"passed": 4, "failed": 2, "total": 6, "pass_rate": 0.6667}, "expectations": [{"text": "DIRECTIONS.md was NOT modified (byte-identical to input)", "passed": true, "evidence": "post-state matches input exactly"}, {"text": "Reply renders existing pool headers (Pool 1, Pool 2)", "passed": true, "evidence": "Pool 1 in reply: True; Pool 2 in reply: True"}, {"text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)", "passed": false, "evidence": "1 status-flag tokens preserved in reply"}, {"text": "Reply contains the leading-edge synthesis from DIRECTIONS.md", "passed": true, "evidence": "matched 'leading edge'"}, {"text": "No drift flag in reply (this is a query, not a new direction)", "passed": true, "evidence": "no drift markers found"}, {"text": "Reply ends with an orientation question", "passed": false, "evidence": "no orientation question"}]}}, {"id": "explicit-pool-view-query-with_skill", "prompt": "where am I in all this? what was I working on?", "eval_id": 2, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `DONE`\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## Pool 2 \u2014 Marketing landing redesign\n*Theme: rework the openkt.ai landing for Q3 launch.*\n\n- Hero image direction \u2014 `SEED`\n\n## What's the leading edge right now?\n\n\"Just focus on the plugin so installation is easier\" \u2014 Pool 1.\n"}, {"name": "reply.md", "type": "text", "content": "Here's where you are (from DIRECTIONS.md, last updated 2026-05-22):\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `DONE`\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## Pool 2 \u2014 Marketing landing redesign\n*Theme: rework the openkt.ai landing for Q3 launch.*\n\n- Hero image direction \u2014 `SEED`\n\n## What's the leading edge right now?\n\n\"Just focus on the plugin so installation is easier\" \u2014 **Pool 1**. PR #30 is open and awaiting merge; Pool 2 (landing redesign) is a parked seed.\n\n---\n\nWant to refocus on Pool 2, or stay on the current edge (PR #30)?\n"}], "grading": {"summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}, "expectations": [{"text": "DIRECTIONS.md was NOT modified (byte-identical to input)", "passed": true, "evidence": "post-state matches input exactly"}, {"text": "Reply renders existing pool headers (Pool 1, Pool 2)", "passed": true, "evidence": "Pool 1 in reply: True; Pool 2 in reply: True"}, {"text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)", "passed": true, "evidence": "3 status-flag tokens preserved in reply"}, {"text": "Reply contains the leading-edge synthesis from DIRECTIONS.md", "passed": true, "evidence": "matched 'leading edge'"}, {"text": "No drift flag in reply (this is a query, not a new direction)", "passed": true, "evidence": "no drift markers found"}, {"text": "Reply ends with an orientation question", "passed": true, "evidence": "ends with '?' or orientation cue"}]}}, {"id": "explicit-pool-view-query-without_skill", "prompt": "where am I in all this? what was I working on?", "eval_id": 2, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `DONE`\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## Pool 2 \u2014 Marketing landing redesign\n*Theme: rework the openkt.ai landing for Q3 launch.*\n\n- Hero image direction \u2014 `SEED`\n\n## What's the leading edge right now?\n\n\"Just focus on the plugin so installation is easier\" \u2014 Pool 1.\n"}, {"name": "reply.md", "type": "text", "content": "You've got two pools going:\n\n**Pool 1 \u2014 CLI auth refactor** (leading edge)\n- Non-interactive flags: DONE\n- `kt mcp serve` with 11 tools: DONE\n- PR #30 awaiting merge\n\n**Pool 2 \u2014 Marketing landing redesign**\n- Hero image direction: just a seed\n\nYour stated focus right now: \"Just focus on the plugin so installation is easier\" \u2014 i.e., Pool 1. Next concrete action is getting PR #30 merged.\n"}], "grading": {"summary": {"passed": 4, "failed": 2, "total": 6, "pass_rate": 0.6667}, "expectations": [{"text": "DIRECTIONS.md was NOT modified (byte-identical to input)", "passed": true, "evidence": "post-state matches input exactly"}, {"text": "Reply renders existing pool headers (Pool 1, Pool 2)", "passed": true, "evidence": "Pool 1 in reply: True; Pool 2 in reply: True"}, {"text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)", "passed": false, "evidence": "1 status-flag tokens preserved in reply"}, {"text": "Reply contains the leading-edge synthesis from DIRECTIONS.md", "passed": true, "evidence": "matched 'leading edge'"}, {"text": "No drift flag in reply (this is a query, not a new direction)", "passed": true, "evidence": "no drift markers found"}, {"text": "Reply ends with an orientation question", "passed": false, "evidence": "no orientation question"}]}}, {"id": "eval-3-with_skill", "prompt": "Now let me also fix the JWT refresh edge case where the token is rotated mid-request. We're already in the auth refactor, this should slot in.", "eval_id": 3, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `LEADING`\n- PR #30 awaiting merge \u2014 `LEADING`\n- JWT refresh edge case: token rotated mid-request \u2014 `LEADING`\n\n## What's the leading edge right now?\n\nUser's framing: \"Now let me also fix the JWT refresh edge case where the token is rotated mid-request. We're already in the auth refactor, this should slot in.\"\n\nSo **Pool 1 (CLI auth refactor)** is still the focus \u2014 the JWT refresh fix slots in as a sub-thread of the same pool.\n"}, {"name": "reply.md", "type": "text", "content": "Yep, that slots into Pool 1 cleanly \u2014 added it under the auth refactor as `LEADING`. No drift flag; same module, same surface.\n\nOn the mid-request rotation: the failure mode is usually that request A reads token T1, the refresher rotates to T2 before A's downstream call lands, and A gets a 401 even though the session is still valid. A few shapes for the fix, depending on where you want the seam:\n\n1. **Single-flight refresh with request-scoped token snapshot.** Capture the token at the start of the request (snapshot semantics), and if the downstream 401s, retry once with a fresh read from the token store. The refresher uses single-flight (sync.Once / mutex) so concurrent requests don't trigger N rotations. Cheap to implement, but you eat one retry per rotation collision.\n\n2. **Generation counter on the token.** Each rotation bumps a counter. The request carries the generation it started with; on 401, the auth middleware compares generations and only retries if the live generation is ahead. Avoids retrying on actual auth failures (wrong creds), only retries on rotation races.\n\n3. **Refresh-ahead with overlap window.** The refresher rotates T1 \u2192 T2 but keeps T1 valid for a short grace window (e.g., 30s). In-flight requests using T1 still succeed. This is the cleanest semantically but requires the token issuer to support overlap, which not every backend does.\n\nFor a CLI specifically, I'd lean toward (1) + (2) combined: single-flight refresh, request-scoped snapshot, and a generation check so you only retry on actual rotation collisions and not on real auth errors. (3) is overkill unless you're seeing it under load.\n\nWhich auth backend are you against \u2014 your own issuer, or something like Cognito / Auth0 / Supabase? That changes whether (3) is even available, and it'll determine where the retry boundary sits (HTTP client interceptor vs the kt command wrapper).\n"}], "grading": {"summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}, "expectations": [{"text": "DIRECTIONS.md was modified (a new entry was added)", "passed": true, "evidence": "output differs from input"}, {"text": "The new entry was added UNDER Pool 1 (auth refactor) \u2014 NOT as a new pool", "passed": true, "evidence": "JWT/refresh entry found inside Pool 1 section"}, {"text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)", "passed": true, "evidence": "found 1 pool heading(s); expected 1"}, {"text": "No drift flag in reply (sub-thread of leading pool \u2014 should not flag)", "passed": true, "evidence": "no drift markers in reply"}, {"text": "Reply answers the JWT-refresh question normally", "passed": true, "evidence": "reply discusses JWT/refresh (matched 'refresh')"}, {"text": "New entry has a status flag", "passed": true, "evidence": "status flag present in DIRECTIONS.md"}]}}, {"id": "eval-3-without_skill", "prompt": "Now let me also fix the JWT refresh edge case where the token is rotated mid-request. We're already in the auth refactor, this should slot in.", "eval_id": 3, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `LEADING`\n- PR #30 awaiting merge \u2014 `LEADING`\n"}, {"name": "reply.md", "type": "text", "content": "Good call \u2014 that fits naturally in the current auth refactor. Mid-request token rotation is a classic source of intermittent 401s, and the cleanest place to handle it is wherever we're already touching the auth middleware/client.\n\nBefore I dive in, let me make sure I understand the scenario you want to handle:\n\n1. **Request starts** with token A (still valid at request start).\n2. **Token A is rotated** to token B by some other path (background refresh, parallel request, server-initiated rotation) while the request is in flight.\n3. **Request completes** and either:\n   - (a) the response comes back fine but the next request now has a stale cached token A, OR\n   - (b) the in-flight request itself gets a 401 because the server already invalidated A.\n\nA few questions so I implement the right thing:\n\n- **Is this for the CLI client, the MCP server, or both?** The refactor in PR #30 looks CLI-focused, so I want to confirm scope.\n- **How is rotation triggered today?** Is there a background refresher, a refresh-on-401 retry, or both? That changes whether we need locking around the token store or just a retry-once-on-401 wrapper.\n- **What's the token store?** In-memory only, or is it persisted (keyring, file)? If it's persisted, concurrent processes complicate things and we may need a file lock or a \"read-after-write\" check.\n\nMy default plan, if you want me to just go:\n\n1. Add a single-flight refresh lock so concurrent requests don't trigger N refreshes (one refresh, others await the result).\n2. On 401, re-read the token from the store before retrying \u2014 if it changed since the request started, retry with the new one; otherwise trigger a refresh.\n3. Cap retries at 1 to avoid loops.\n4. Add a test that simulates rotation between `getToken()` and the actual HTTP call.\n\nWant me to proceed with that, or do you want to constrain it differently? Also \u2014 should I file this as a follow-up bead under the auth refactor epic, or fold it into the existing PR #30?\n"}], "grading": {"summary": {"passed": 4, "failed": 2, "total": 6, "pass_rate": 0.6667}, "expectations": [{"text": "DIRECTIONS.md was modified (a new entry was added)", "passed": false, "evidence": "output identical to input"}, {"text": "The new entry was added UNDER Pool 1 (auth refactor) \u2014 NOT as a new pool", "passed": false, "evidence": "JWT entry not located under Pool 1"}, {"text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)", "passed": true, "evidence": "found 1 pool heading(s); expected 1"}, {"text": "No drift flag in reply (sub-thread of leading pool \u2014 should not flag)", "passed": true, "evidence": "no drift markers in reply"}, {"text": "Reply answers the JWT-refresh question normally", "passed": true, "evidence": "reply discusses JWT/refresh (matched 'refresh')"}, {"text": "New entry has a status flag", "passed": true, "evidence": "status flag present in DIRECTIONS.md"}]}}, {"id": "same-pool-subthread-no-drift-with_skill", "prompt": "Now let me also fix the JWT refresh edge case where the token is rotated mid-request. We're already in the auth refactor, this should slot in.", "eval_id": 3, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `LEADING`\n- PR #30 awaiting merge \u2014 `LEADING`\n- JWT refresh edge case: token rotated mid-request \u2014 `LEADING`\n\n## What's the leading edge right now?\n\nUser's framing: \"Now let me also fix the JWT refresh edge case where the token is rotated mid-request. We're already in the auth refactor, this should slot in.\"\n\nSo **Pool 1 (CLI auth refactor)** is still the focus \u2014 the JWT refresh fix slots in as a sub-thread of the same pool.\n"}, {"name": "reply.md", "type": "text", "content": "Yep, that slots into Pool 1 cleanly \u2014 added it under the auth refactor as `LEADING`. No drift flag; same module, same surface.\n\nOn the mid-request rotation: the failure mode is usually that request A reads token T1, the refresher rotates to T2 before A's downstream call lands, and A gets a 401 even though the session is still valid. A few shapes for the fix, depending on where you want the seam:\n\n1. **Single-flight refresh with request-scoped token snapshot.** Capture the token at the start of the request (snapshot semantics), and if the downstream 401s, retry once with a fresh read from the token store. The refresher uses single-flight (sync.Once / mutex) so concurrent requests don't trigger N rotations. Cheap to implement, but you eat one retry per rotation collision.\n\n2. **Generation counter on the token.** Each rotation bumps a counter. The request carries the generation it started with; on 401, the auth middleware compares generations and only retries if the live generation is ahead. Avoids retrying on actual auth failures (wrong creds), only retries on rotation races.\n\n3. **Refresh-ahead with overlap window.** The refresher rotates T1 \u2192 T2 but keeps T1 valid for a short grace window (e.g., 30s). In-flight requests using T1 still succeed. This is the cleanest semantically but requires the token issuer to support overlap, which not every backend does.\n\nFor a CLI specifically, I'd lean toward (1) + (2) combined: single-flight refresh, request-scoped snapshot, and a generation check so you only retry on actual rotation collisions and not on real auth errors. (3) is overkill unless you're seeing it under load.\n\nWhich auth backend are you against \u2014 your own issuer, or something like Cognito / Auth0 / Supabase? That changes whether (3) is even available, and it'll determine where the retry boundary sits (HTTP client interceptor vs the kt command wrapper).\n"}], "grading": {"summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}, "expectations": [{"text": "DIRECTIONS.md was modified (a new entry was added)", "passed": true, "evidence": "output differs from input"}, {"text": "The new entry was added UNDER Pool 1 (auth refactor) \u2014 NOT as a new pool", "passed": true, "evidence": "JWT/refresh entry found inside Pool 1 section"}, {"text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)", "passed": true, "evidence": "found 1 pool heading(s); expected 1"}, {"text": "No drift flag in reply (sub-thread of leading pool \u2014 should not flag)", "passed": true, "evidence": "no drift markers in reply"}, {"text": "Reply answers the JWT-refresh question normally", "passed": true, "evidence": "reply discusses JWT/refresh (matched 'refresh')"}, {"text": "New entry has a status flag", "passed": true, "evidence": "status flag present in DIRECTIONS.md"}]}}, {"id": "same-pool-subthread-no-drift-without_skill", "prompt": "Now let me also fix the JWT refresh edge case where the token is rotated mid-request. We're already in the auth refactor, this should slot in.", "eval_id": 3, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command \u2014 `DONE`\n- kt mcp serve with 11 tools \u2014 `LEADING`\n- PR #30 awaiting merge \u2014 `LEADING`\n"}, {"name": "reply.md", "type": "text", "content": "Good call \u2014 that fits naturally in the current auth refactor. Mid-request token rotation is a classic source of intermittent 401s, and the cleanest place to handle it is wherever we're already touching the auth middleware/client.\n\nBefore I dive in, let me make sure I understand the scenario you want to handle:\n\n1. **Request starts** with token A (still valid at request start).\n2. **Token A is rotated** to token B by some other path (background refresh, parallel request, server-initiated rotation) while the request is in flight.\n3. **Request completes** and either:\n   - (a) the response comes back fine but the next request now has a stale cached token A, OR\n   - (b) the in-flight request itself gets a 401 because the server already invalidated A.\n\nA few questions so I implement the right thing:\n\n- **Is this for the CLI client, the MCP server, or both?** The refactor in PR #30 looks CLI-focused, so I want to confirm scope.\n- **How is rotation triggered today?** Is there a background refresher, a refresh-on-401 retry, or both? That changes whether we need locking around the token store or just a retry-once-on-401 wrapper.\n- **What's the token store?** In-memory only, or is it persisted (keyring, file)? If it's persisted, concurrent processes complicate things and we may need a file lock or a \"read-after-write\" check.\n\nMy default plan, if you want me to just go:\n\n1. Add a single-flight refresh lock so concurrent requests don't trigger N refreshes (one refresh, others await the result).\n2. On 401, re-read the token from the store before retrying \u2014 if it changed since the request started, retry with the new one; otherwise trigger a refresh.\n3. Cap retries at 1 to avoid loops.\n4. Add a test that simulates rotation between `getToken()` and the actual HTTP call.\n\nWant me to proceed with that, or do you want to constrain it differently? Also \u2014 should I file this as a follow-up bead under the auth refactor epic, or fold it into the existing PR #30?\n"}], "grading": {"summary": {"passed": 4, "failed": 2, "total": 6, "pass_rate": 0.6667}, "expectations": [{"text": "DIRECTIONS.md was modified (a new entry was added)", "passed": false, "evidence": "output identical to input"}, {"text": "The new entry was added UNDER Pool 1 (auth refactor) \u2014 NOT as a new pool", "passed": false, "evidence": "JWT entry not located under Pool 1"}, {"text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)", "passed": true, "evidence": "found 1 pool heading(s); expected 1"}, {"text": "No drift flag in reply (sub-thread of leading pool \u2014 should not flag)", "passed": true, "evidence": "no drift markers in reply"}, {"text": "Reply answers the JWT-refresh question normally", "passed": true, "evidence": "reply discusses JWT/refresh (matched 'refresh')"}, {"text": "New entry has a status flag", "passed": true, "evidence": "status flag present in DIRECTIONS.md"}]}}, {"id": "bulk-multi-direction-prompt-with_skill", "prompt": "Let me also start on analytics for the landing page, AND we should sync with the design team about the new brand colors, and oh I also want to fix the deployment pipeline that's been flaky.", "eval_id": 4, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n**Purpose:** Step-back view of every direction this conversation has been pulled in, grouped into themes (pools), with status flags.\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## Pool 2 \u2014 Landing page analytics\n*Theme: \"start on analytics for the landing page\" (user, 2026-05-22).*\n\n- Analytics instrumentation for landing page \u2014 `SEED`\n\n## Pool 3 \u2014 Design team sync on brand colors\n*Theme: \"sync with the design team about the new brand colors\" (user, 2026-05-22).*\n\n- Schedule / hold sync with design team re: new brand colors \u2014 `SEED`\n\n## Pool 4 \u2014 Deployment pipeline flakiness\n*Theme: \"fix the deployment pipeline that's been flaky\" (user, 2026-05-22).*\n\n- Investigate and fix flaky deployment pipeline \u2014 `SEED`\n\n## What's drifting\n\n(Drift = mentioned but no follow-up across recent turns)\n- None yet \u2014 the three new pools were just opened this turn.\n\n## What's the leading edge right now?\n\nPool 1 (CLI auth refactor) is still LEADING \u2014 PR #30 is open and awaiting merge. Three new pools (2, 3, 4) were just opened in a single prompt as `SEED` and have not yet been promoted. Awaiting user signal on which (if any) becomes the new leading edge.\n"}, {"name": "reply.md", "type": "text", "content": "Heads up: that one message opened three new pools, all orthogonal to your current LEADING edge (Pool 1, CLI auth refactor \u2014 PR #30 still awaiting merge). I've added them to DIRECTIONS.md as `SEED`:\n\n- **Pool 2** \u2014 Landing page analytics\n- **Pool 3** \u2014 Design team sync on brand colors\n- **Pool 4** \u2014 Deployment pipeline flakiness\n\nPool 1 is still marked LEADING. Which of these is the new leading edge \u2014 or do you want to stay on Pool 1 and keep 2/3/4 parked as seeds? (Reply \"pivot to Pool N\" to switch, or \"stay on 1\" to keep going.)\n\nHappy to start on any of the three as soon as you point \u2014 quick sketch of what each would look like:\n\n1. **Landing page analytics** \u2014 first call is picking the stack (Plausible / PostHog / GA4) and deciding what events matter (CTA clicks, scroll depth, signup funnel). Want me to draft an event taxonomy first?\n2. **Design sync on brand colors** \u2014 this is mostly a scheduling / agenda item. I can draft the agenda (what to decide, what to bring, what's blocked on their input) so the meeting is short.\n3. **Deployment pipeline** \u2014 need a recent failure log to start. If you can paste one (or point me at the CI run), I can start triaging; otherwise I'd start by reading the pipeline config and listing the top suspects.\n\nWhich one do you want live first?\n"}], "grading": {"summary": {"passed": 7, "failed": 0, "total": 7, "pass_rate": 1.0}, "expectations": [{"text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)", "passed": true, "evidence": "found 4 pool heading(s); expected 4 (original Pool 1 + 3 new)"}, {"text": "Pool 1 (CLI auth refactor) is preserved unchanged", "passed": true, "evidence": "Pool 1 + CLI/auth still present"}, {"text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)", "passed": true, "evidence": "2 drift-marker occurrence(s) (consolidated if 1-4)"}, {"text": "Consolidated note mentions all three new pools by name", "passed": true, "evidence": "analytics=True, design=True, deploy=True"}, {"text": "Reply asks which is the new leading edge or acknowledges all three threads", "passed": true, "evidence": "matched orientation prompt 'leading edge'"}, {"text": "Each new pool has a one-line theme description", "passed": true, "evidence": "theme italic lines present in DIRECTIONS.md"}, {"text": "Each new pool entry has a status flag", "passed": true, "evidence": "status flags present"}]}}, {"id": "bulk-multi-direction-prompt-without_skill", "prompt": "Let me also start on analytics for the landing page, AND we should sync with the design team about the new brand colors, and oh I also want to fix the deployment pipeline that's been flaky.", "eval_id": 4, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## What's the leading edge right now?\n\nPool 1 (CLI auth refactor).\n"}, {"name": "reply.md", "type": "text", "content": "Happy to help with all three \u2014 let me make sure I've got them straight before we dive in, since they're pretty different threads:\n\n1. **Analytics for the landing page** \u2014 Are you thinking a specific tool (PostHog, Plausible, GA4, Segment, something self-hosted)? And what events matter most first: pageviews + scroll depth, CTA clicks, conversion funnel, or all of the above? Also, is the landing page in this repo or somewhere else?\n\n2. **Sync with the design team about new brand colors** \u2014 This sounds more like scheduling/comms than something I can do directly. Want me to draft a message to send them (Slack, email, ticket)? Or are the new colors already defined somewhere and you want me to start auditing where the old ones are used in the codebase so the sync is more productive?\n\n3. **Fix the flaky deployment pipeline** \u2014 Which pipeline (GitHub Actions, CircleCI, something else) and what does the flakiness look like? Intermittent test failures, deploy step timeouts, env/secrets issues? If you can point me at a recent failing run or two, I can start digging.\n\nIf you want, the cheapest path is: I draft the design-team message right now (quick win), then we pick **one** of analytics or pipeline to actually start on this session \u2014 they'll both eat real time and context-switching between them tends to leave both half-done. Which would you rather tackle first?\n"}], "grading": {"summary": {"passed": 5, "failed": 2, "total": 7, "pass_rate": 0.7143}, "expectations": [{"text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)", "passed": false, "evidence": "found 1 pool heading(s); expected 4 (original Pool 1 + 3 new)"}, {"text": "Pool 1 (CLI auth refactor) is preserved unchanged", "passed": true, "evidence": "Pool 1 + CLI/auth still present"}, {"text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)", "passed": false, "evidence": "0 drift-marker occurrence(s) (consolidated if 1-4)"}, {"text": "Consolidated note mentions all three new pools by name", "passed": true, "evidence": "analytics=True, design=True, deploy=True"}, {"text": "Reply asks which is the new leading edge or acknowledges all three threads", "passed": true, "evidence": "matched orientation prompt 'which'"}, {"text": "Each new pool has a one-line theme description", "passed": true, "evidence": "theme italic lines present in DIRECTIONS.md"}, {"text": "Each new pool entry has a status flag", "passed": true, "evidence": "status flags present"}]}}, {"id": "eval-4-with_skill", "prompt": "Let me also start on analytics for the landing page, AND we should sync with the design team about the new brand colors, and oh I also want to fix the deployment pipeline that's been flaky.", "eval_id": 4, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n**Purpose:** Step-back view of every direction this conversation has been pulled in, grouped into themes (pools), with status flags.\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## Pool 2 \u2014 Landing page analytics\n*Theme: \"start on analytics for the landing page\" (user, 2026-05-22).*\n\n- Analytics instrumentation for landing page \u2014 `SEED`\n\n## Pool 3 \u2014 Design team sync on brand colors\n*Theme: \"sync with the design team about the new brand colors\" (user, 2026-05-22).*\n\n- Schedule / hold sync with design team re: new brand colors \u2014 `SEED`\n\n## Pool 4 \u2014 Deployment pipeline flakiness\n*Theme: \"fix the deployment pipeline that's been flaky\" (user, 2026-05-22).*\n\n- Investigate and fix flaky deployment pipeline \u2014 `SEED`\n\n## What's drifting\n\n(Drift = mentioned but no follow-up across recent turns)\n- None yet \u2014 the three new pools were just opened this turn.\n\n## What's the leading edge right now?\n\nPool 1 (CLI auth refactor) is still LEADING \u2014 PR #30 is open and awaiting merge. Three new pools (2, 3, 4) were just opened in a single prompt as `SEED` and have not yet been promoted. Awaiting user signal on which (if any) becomes the new leading edge.\n"}, {"name": "reply.md", "type": "text", "content": "Heads up: that one message opened three new pools, all orthogonal to your current LEADING edge (Pool 1, CLI auth refactor \u2014 PR #30 still awaiting merge). I've added them to DIRECTIONS.md as `SEED`:\n\n- **Pool 2** \u2014 Landing page analytics\n- **Pool 3** \u2014 Design team sync on brand colors\n- **Pool 4** \u2014 Deployment pipeline flakiness\n\nPool 1 is still marked LEADING. Which of these is the new leading edge \u2014 or do you want to stay on Pool 1 and keep 2/3/4 parked as seeds? (Reply \"pivot to Pool N\" to switch, or \"stay on 1\" to keep going.)\n\nHappy to start on any of the three as soon as you point \u2014 quick sketch of what each would look like:\n\n1. **Landing page analytics** \u2014 first call is picking the stack (Plausible / PostHog / GA4) and deciding what events matter (CTA clicks, scroll depth, signup funnel). Want me to draft an event taxonomy first?\n2. **Design sync on brand colors** \u2014 this is mostly a scheduling / agenda item. I can draft the agenda (what to decide, what to bring, what's blocked on their input) so the meeting is short.\n3. **Deployment pipeline** \u2014 need a recent failure log to start. If you can paste one (or point me at the CI run), I can start triaging; otherwise I'd start by reading the pipeline config and listing the top suspects.\n\nWhich one do you want live first?\n"}], "grading": {"summary": {"passed": 7, "failed": 0, "total": 7, "pass_rate": 1.0}, "expectations": [{"text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)", "passed": true, "evidence": "found 4 pool heading(s); expected 4 (original Pool 1 + 3 new)"}, {"text": "Pool 1 (CLI auth refactor) is preserved unchanged", "passed": true, "evidence": "Pool 1 + CLI/auth still present"}, {"text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)", "passed": true, "evidence": "2 drift-marker occurrence(s) (consolidated if 1-4)"}, {"text": "Consolidated note mentions all three new pools by name", "passed": true, "evidence": "analytics=True, design=True, deploy=True"}, {"text": "Reply asks which is the new leading edge or acknowledges all three threads", "passed": true, "evidence": "matched orientation prompt 'leading edge'"}, {"text": "Each new pool has a one-line theme description", "passed": true, "evidence": "theme italic lines present in DIRECTIONS.md"}, {"text": "Each new pool entry has a status flag", "passed": true, "evidence": "status flags present"}]}}, {"id": "eval-4-without_skill", "prompt": "Let me also start on analytics for the landing page, AND we should sync with the design team about the new brand colors, and oh I also want to fix the deployment pipeline that's been flaky.", "eval_id": 4, "outputs": [{"name": "DIRECTIONS.md", "type": "text", "content": "# Directions \u2014 test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 \u2014 CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- PR #30 awaiting merge \u2014 `LEADING`\n\n## What's the leading edge right now?\n\nPool 1 (CLI auth refactor).\n"}, {"name": "reply.md", "type": "text", "content": "Happy to help with all three \u2014 let me make sure I've got them straight before we dive in, since they're pretty different threads:\n\n1. **Analytics for the landing page** \u2014 Are you thinking a specific tool (PostHog, Plausible, GA4, Segment, something self-hosted)? And what events matter most first: pageviews + scroll depth, CTA clicks, conversion funnel, or all of the above? Also, is the landing page in this repo or somewhere else?\n\n2. **Sync with the design team about new brand colors** \u2014 This sounds more like scheduling/comms than something I can do directly. Want me to draft a message to send them (Slack, email, ticket)? Or are the new colors already defined somewhere and you want me to start auditing where the old ones are used in the codebase so the sync is more productive?\n\n3. **Fix the flaky deployment pipeline** \u2014 Which pipeline (GitHub Actions, CircleCI, something else) and what does the flakiness look like? Intermittent test failures, deploy step timeouts, env/secrets issues? If you can point me at a recent failing run or two, I can start digging.\n\nIf you want, the cheapest path is: I draft the design-team message right now (quick win), then we pick **one** of analytics or pipeline to actually start on this session \u2014 they'll both eat real time and context-switching between them tends to leave both half-done. Which would you rather tackle first?\n"}], "grading": {"summary": {"passed": 5, "failed": 2, "total": 7, "pass_rate": 0.7143}, "expectations": [{"text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)", "passed": false, "evidence": "found 1 pool heading(s); expected 4 (original Pool 1 + 3 new)"}, {"text": "Pool 1 (CLI auth refactor) is preserved unchanged", "passed": true, "evidence": "Pool 1 + CLI/auth still present"}, {"text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)", "passed": false, "evidence": "0 drift-marker occurrence(s) (consolidated if 1-4)"}, {"text": "Consolidated note mentions all three new pools by name", "passed": true, "evidence": "analytics=True, design=True, deploy=True"}, {"text": "Reply asks which is the new leading edge or acknowledges all three threads", "passed": true, "evidence": "matched orientation prompt 'which'"}, {"text": "Each new pool has a one-line theme description", "passed": true, "evidence": "theme italic lines present in DIRECTIONS.md"}, {"text": "Each new pool entry has a status flag", "passed": true, "evidence": "status flags present"}]}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "direction-tracker", "skill_path": "<path/to/skill>", "executor_model": "<model-name>", "analyzer_model": "<model-name>", "timestamp": "2026-05-22T22:50:32Z", "evals_run": [1, 2, 3, 4], "runs_per_configuration": 3}, "runs": [{"eval_id": 1, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 7, "failed": 0, "total": 7, "time_seconds": 49.296, "tokens": 41320, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "DIRECTIONS.md was created at project root (file didn't exist before)", "passed": true, "evidence": "output DIRECTIONS.md is 1650 bytes (input was 0)"}, {"text": "DIRECTIONS.md contains at least 2 distinct pools", "passed": true, "evidence": "found 2 pool heading(s)"}, {"text": "One pool captures the CLI auth refactor (from history)", "passed": true, "evidence": "matched 'CLI'"}, {"text": "One pool captures the marketing landing thread (new)", "passed": true, "evidence": "matched 'marketing'"}, {"text": "Reply text contains an inline drift flag mentioning the new pool", "passed": true, "evidence": "matched drift marker 'Note:'"}, {"text": "Reply still answers the hero image question (drift flag doesn't block)", "passed": true, "evidence": "reply discusses hero/image (matched 'hero')"}, {"text": "Pool entries include at least one status flag", "passed": true, "evidence": "status flags present"}], "notes": []}, {"eval_id": 2, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 25.246, "tokens": 40375, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "DIRECTIONS.md was NOT modified (byte-identical to input)", "passed": true, "evidence": "post-state matches input exactly"}, {"text": "Reply renders existing pool headers (Pool 1, Pool 2)", "passed": true, "evidence": "Pool 1 in reply: True; Pool 2 in reply: True"}, {"text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)", "passed": true, "evidence": "3 status-flag tokens preserved in reply"}, {"text": "Reply contains the leading-edge synthesis from DIRECTIONS.md", "passed": true, "evidence": "matched 'leading edge'"}, {"text": "No drift flag in reply (this is a query, not a new direction)", "passed": true, "evidence": "no drift markers found"}, {"text": "Reply ends with an orientation question", "passed": true, "evidence": "ends with '?' or orientation cue"}], "notes": []}, {"eval_id": 3, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 43.681, "tokens": 40921, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "DIRECTIONS.md was modified (a new entry was added)", "passed": true, "evidence": "output differs from input"}, {"text": "The new entry was added UNDER Pool 1 (auth refactor) \u2014 NOT as a new pool", "passed": true, "evidence": "JWT/refresh entry found inside Pool 1 section"}, {"text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)", "passed": true, "evidence": "found 1 pool heading(s); expected 1"}, {"text": "No drift flag in reply (sub-thread of leading pool \u2014 should not flag)", "passed": true, "evidence": "no drift markers in reply"}, {"text": "Reply answers the JWT-refresh question normally", "passed": true, "evidence": "reply discusses JWT/refresh (matched 'refresh')"}, {"text": "New entry has a status flag", "passed": true, "evidence": "status flag present in DIRECTIONS.md"}], "notes": []}, {"eval_id": 4, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 7, "failed": 0, "total": 7, "time_seconds": 34.069, "tokens": 40579, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)", "passed": true, "evidence": "found 4 pool heading(s); expected 4 (original Pool 1 + 3 new)"}, {"text": "Pool 1 (CLI auth refactor) is preserved unchanged", "passed": true, "evidence": "Pool 1 + CLI/auth still present"}, {"text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)", "passed": true, "evidence": "2 drift-marker occurrence(s) (consolidated if 1-4)"}, {"text": "Consolidated note mentions all three new pools by name", "passed": true, "evidence": "analytics=True, design=True, deploy=True"}, {"text": "Reply asks which is the new leading edge or acknowledges all three threads", "passed": true, "evidence": "matched orientation prompt 'leading edge'"}, {"text": "Each new pool has a one-line theme description", "passed": true, "evidence": "theme italic lines present in DIRECTIONS.md"}, {"text": "Each new pool entry has a status flag", "passed": true, "evidence": "status flags present"}], "notes": []}, {"eval_id": 1, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.1429, "passed": 1, "failed": 6, "total": 7, "time_seconds": 16.972, "tokens": 28802, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "DIRECTIONS.md was created at project root (file didn't exist before)", "passed": false, "evidence": "output DIRECTIONS.md is 0 bytes (input was 0)"}, {"text": "DIRECTIONS.md contains at least 2 distinct pools", "passed": false, "evidence": "found 0 pool heading(s)"}, {"text": "One pool captures the CLI auth refactor (from history)", "passed": false, "evidence": "no CLI/auth match in DIRECTIONS.md"}, {"text": "One pool captures the marketing landing thread (new)", "passed": false, "evidence": "no marketing/landing match"}, {"text": "Reply text contains an inline drift flag mentioning the new pool", "passed": false, "evidence": "no drift flag in reply"}, {"text": "Reply still answers the hero image question (drift flag doesn't block)", "passed": true, "evidence": "reply discusses hero/image (matched 'hero')"}, {"text": "Pool entries include at least one status flag", "passed": false, "evidence": "no `LEADING`/`SEED`/etc. found"}], "notes": []}, {"eval_id": 2, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.6667, "passed": 4, "failed": 2, "total": 6, "time_seconds": 21.126, "tokens": 29325, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "DIRECTIONS.md was NOT modified (byte-identical to input)", "passed": true, "evidence": "post-state matches input exactly"}, {"text": "Reply renders existing pool headers (Pool 1, Pool 2)", "passed": true, "evidence": "Pool 1 in reply: True; Pool 2 in reply: True"}, {"text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)", "passed": false, "evidence": "1 status-flag tokens preserved in reply"}, {"text": "Reply contains the leading-edge synthesis from DIRECTIONS.md", "passed": true, "evidence": "matched 'leading edge'"}, {"text": "No drift flag in reply (this is a query, not a new direction)", "passed": true, "evidence": "no drift markers found"}, {"text": "Reply ends with an orientation question", "passed": false, "evidence": "no orientation question"}], "notes": []}, {"eval_id": 3, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.6667, "passed": 4, "failed": 2, "total": 6, "time_seconds": 34.833, "tokens": 29599, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "DIRECTIONS.md was modified (a new entry was added)", "passed": false, "evidence": "output identical to input"}, {"text": "The new entry was added UNDER Pool 1 (auth refactor) \u2014 NOT as a new pool", "passed": false, "evidence": "JWT entry not located under Pool 1"}, {"text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)", "passed": true, "evidence": "found 1 pool heading(s); expected 1"}, {"text": "No drift flag in reply (sub-thread of leading pool \u2014 should not flag)", "passed": true, "evidence": "no drift markers in reply"}, {"text": "Reply answers the JWT-refresh question normally", "passed": true, "evidence": "reply discusses JWT/refresh (matched 'refresh')"}, {"text": "New entry has a status flag", "passed": true, "evidence": "status flag present in DIRECTIONS.md"}], "notes": []}, {"eval_id": 4, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.7143, "passed": 5, "failed": 2, "total": 7, "time_seconds": 28.121, "tokens": 29508, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)", "passed": false, "evidence": "found 1 pool heading(s); expected 4 (original Pool 1 + 3 new)"}, {"text": "Pool 1 (CLI auth refactor) is preserved unchanged", "passed": true, "evidence": "Pool 1 + CLI/auth still present"}, {"text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)", "passed": false, "evidence": "0 drift-marker occurrence(s) (consolidated if 1-4)"}, {"text": "Consolidated note mentions all three new pools by name", "passed": true, "evidence": "analytics=True, design=True, deploy=True"}, {"text": "Reply asks which is the new leading edge or acknowledges all three threads", "passed": true, "evidence": "matched orientation prompt 'which'"}, {"text": "Each new pool has a one-line theme description", "passed": true, "evidence": "theme italic lines present in DIRECTIONS.md"}, {"text": "Each new pool entry has a status flag", "passed": true, "evidence": "status flags present"}], "notes": []}], "run_summary": {"with_skill": {"pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}, "time_seconds": {"mean": 38.073, "stddev": 10.614, "min": 25.246, "max": 49.296}, "tokens": {"mean": 40798.75, "stddev": 414.1259, "min": 40375, "max": 41320}}, "without_skill": {"pass_rate": {"mean": 0.5476, "stddev": 0.2708, "min": 0.1429, "max": 0.7143}, "time_seconds": {"mean": 25.263, "stddev": 7.8657, "min": 16.972, "max": 34.833}, "tokens": {"mean": 29308.5, "stddev": 356.3729, "min": 28802, "max": 29599}}, "delta": {"pass_rate": "+0.45", "time_seconds": "+12.8", "tokens": "+11490"}}, "notes": []}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

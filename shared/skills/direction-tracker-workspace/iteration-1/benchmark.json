@@ -1,0 +1,470 @@
+{
+  "metadata": {
+    "skill_name": "direction-tracker",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-05-22T22:50:32Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 49.296,
+        "tokens": 41320,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "DIRECTIONS.md was created at project root (file didn't exist before)",
+          "passed": true,
+          "evidence": "output DIRECTIONS.md is 1650 bytes (input was 0)"
+        },
+        {
+          "text": "DIRECTIONS.md contains at least 2 distinct pools",
+          "passed": true,
+          "evidence": "found 2 pool heading(s)"
+        },
+        {
+          "text": "One pool captures the CLI auth refactor (from history)",
+          "passed": true,
+          "evidence": "matched 'CLI'"
+        },
+        {
+          "text": "One pool captures the marketing landing thread (new)",
+          "passed": true,
+          "evidence": "matched 'marketing'"
+        },
+        {
+          "text": "Reply text contains an inline drift flag mentioning the new pool",
+          "passed": true,
+          "evidence": "matched drift marker 'Note:'"
+        },
+        {
+          "text": "Reply still answers the hero image question (drift flag doesn't block)",
+          "passed": true,
+          "evidence": "reply discusses hero/image (matched 'hero')"
+        },
+        {
+          "text": "Pool entries include at least one status flag",
+          "passed": true,
+          "evidence": "status flags present"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 25.246,
+        "tokens": 40375,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "DIRECTIONS.md was NOT modified (byte-identical to input)",
+          "passed": true,
+          "evidence": "post-state matches input exactly"
+        },
+        {
+          "text": "Reply renders existing pool headers (Pool 1, Pool 2)",
+          "passed": true,
+          "evidence": "Pool 1 in reply: True; Pool 2 in reply: True"
+        },
+        {
+          "text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)",
+          "passed": true,
+          "evidence": "3 status-flag tokens preserved in reply"
+        },
+        {
+          "text": "Reply contains the leading-edge synthesis from DIRECTIONS.md",
+          "passed": true,
+          "evidence": "matched 'leading edge'"
+        },
+        {
+          "text": "No drift flag in reply (this is a query, not a new direction)",
+          "passed": true,
+          "evidence": "no drift markers found"
+        },
+        {
+          "text": "Reply ends with an orientation question",
+          "passed": true,
+          "evidence": "ends with '?' or orientation cue"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 43.681,
+        "tokens": 40921,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "DIRECTIONS.md was modified (a new entry was added)",
+          "passed": true,
+          "evidence": "output differs from input"
+        },
+        {
+          "text": "The new entry was added UNDER Pool 1 (auth refactor) \u2014 NOT as a new pool",
+          "passed": true,
+          "evidence": "JWT/refresh entry found inside Pool 1 section"
+        },
+        {
+          "text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)",
+          "passed": true,
+          "evidence": "found 1 pool heading(s); expected 1"
+        },
+        {
+          "text": "No drift flag in reply (sub-thread of leading pool \u2014 should not flag)",
+          "passed": true,
+          "evidence": "no drift markers in reply"
+        },
+        {
+          "text": "Reply answers the JWT-refresh question normally",
+          "passed": true,
+          "evidence": "reply discusses JWT/refresh (matched 'refresh')"
+        },
+        {
+          "text": "New entry has a status flag",
+          "passed": true,
+          "evidence": "status flag present in DIRECTIONS.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 34.069,
+        "tokens": 40579,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)",
+          "passed": true,
+          "evidence": "found 4 pool heading(s); expected 4 (original Pool 1 + 3 new)"
+        },
+        {
+          "text": "Pool 1 (CLI auth refactor) is preserved unchanged",
+          "passed": true,
+          "evidence": "Pool 1 + CLI/auth still present"
+        },
+        {
+          "text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)",
+          "passed": true,
+          "evidence": "2 drift-marker occurrence(s) (consolidated if 1-4)"
+        },
+        {
+          "text": "Consolidated note mentions all three new pools by name",
+          "passed": true,
+          "evidence": "analytics=True, design=True, deploy=True"
+        },
+        {
+          "text": "Reply asks which is the new leading edge or acknowledges all three threads",
+          "passed": true,
+          "evidence": "matched orientation prompt 'leading edge'"
+        },
+        {
+          "text": "Each new pool has a one-line theme description",
+          "passed": true,
+          "evidence": "theme italic lines present in DIRECTIONS.md"
+        },
+        {
+          "text": "Each new pool entry has a status flag",
+          "passed": true,
+          "evidence": "status flags present"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.1429,
+        "passed": 1,
+        "failed": 6,
+        "total": 7,
+        "time_seconds": 16.972,
+        "tokens": 28802,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "DIRECTIONS.md was created at project root (file didn't exist before)",
+          "passed": false,
+          "evidence": "output DIRECTIONS.md is 0 bytes (input was 0)"
+        },
+        {
+          "text": "DIRECTIONS.md contains at least 2 distinct pools",
+          "passed": false,
+          "evidence": "found 0 pool heading(s)"
+        },
+        {
+          "text": "One pool captures the CLI auth refactor (from history)",
+          "passed": false,
+          "evidence": "no CLI/auth match in DIRECTIONS.md"
+        },
+        {
+          "text": "One pool captures the marketing landing thread (new)",
+          "passed": false,
+          "evidence": "no marketing/landing match"
+        },
+        {
+          "text": "Reply text contains an inline drift flag mentioning the new pool",
+          "passed": false,
+          "evidence": "no drift flag in reply"
+        },
+        {
+          "text": "Reply still answers the hero image question (drift flag doesn't block)",
+          "passed": true,
+          "evidence": "reply discusses hero/image (matched 'hero')"
+        },
+        {
+          "text": "Pool entries include at least one status flag",
+          "passed": false,
+          "evidence": "no `LEADING`/`SEED`/etc. found"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6667,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 21.126,
+        "tokens": 29325,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "DIRECTIONS.md was NOT modified (byte-identical to input)",
+          "passed": true,
+          "evidence": "post-state matches input exactly"
+        },
+        {
+          "text": "Reply renders existing pool headers (Pool 1, Pool 2)",
+          "passed": true,
+          "evidence": "Pool 1 in reply: True; Pool 2 in reply: True"
+        },
+        {
+          "text": "Reply preserves status flags for entries (LEADING, DONE, SEED visible)",
+          "passed": false,
+          "evidence": "1 status-flag tokens preserved in reply"
+        },
+        {
+          "text": "Reply contains the leading-edge synthesis from DIRECTIONS.md",
+          "passed": true,
+          "evidence": "matched 'leading edge'"
+        },
+        {
+          "text": "No drift flag in reply (this is a query, not a new direction)",
+          "passed": true,
+          "evidence": "no drift markers found"
+        },
+        {
+          "text": "Reply ends with an orientation question",
+          "passed": false,
+          "evidence": "no orientation question"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6667,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 34.833,
+        "tokens": 29599,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "DIRECTIONS.md was modified (a new entry was added)",
+          "passed": false,
+          "evidence": "output identical to input"
+        },
+        {
+          "text": "The new entry was added UNDER Pool 1 (auth refactor) \u2014 NOT as a new pool",
+          "passed": false,
+          "evidence": "JWT entry not located under Pool 1"
+        },
+        {
+          "text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)",
+          "passed": true,
+          "evidence": "found 1 pool heading(s); expected 1"
+        },
+        {
+          "text": "No drift flag in reply (sub-thread of leading pool \u2014 should not flag)",
+          "passed": true,
+          "evidence": "no drift markers in reply"
+        },
+        {
+          "text": "Reply answers the JWT-refresh question normally",
+          "passed": true,
+          "evidence": "reply discusses JWT/refresh (matched 'refresh')"
+        },
+        {
+          "text": "New entry has a status flag",
+          "passed": true,
+          "evidence": "status flag present in DIRECTIONS.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.7143,
+        "passed": 5,
+        "failed": 2,
+        "total": 7,
+        "time_seconds": 28.121,
+        "tokens": 29508,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "DIRECTIONS.md was modified to include 3 new pools (Analytics, Design sync, Deploy pipeline)",
+          "passed": false,
+          "evidence": "found 1 pool heading(s); expected 4 (original Pool 1 + 3 new)"
+        },
+        {
+          "text": "Pool 1 (CLI auth refactor) is preserved unchanged",
+          "passed": true,
+          "evidence": "Pool 1 + CLI/auth still present"
+        },
+        {
+          "text": "Reply contains a SINGLE consolidated note at top (not 3 separate drift flags)",
+          "passed": false,
+          "evidence": "0 drift-marker occurrence(s) (consolidated if 1-4)"
+        },
+        {
+          "text": "Consolidated note mentions all three new pools by name",
+          "passed": true,
+          "evidence": "analytics=True, design=True, deploy=True"
+        },
+        {
+          "text": "Reply asks which is the new leading edge or acknowledges all three threads",
+          "passed": true,
+          "evidence": "matched orientation prompt 'which'"
+        },
+        {
+          "text": "Each new pool has a one-line theme description",
+          "passed": true,
+          "evidence": "theme italic lines present in DIRECTIONS.md"
+        },
+        {
+          "text": "Each new pool entry has a status flag",
+          "passed": true,
+          "evidence": "status flags present"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 38.073,
+        "stddev": 10.614,
+        "min": 25.246,
+        "max": 49.296
+      },
+      "tokens": {
+        "mean": 40798.75,
+        "stddev": 414.1259,
+        "min": 40375,
+        "max": 41320
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.5476,
+        "stddev": 0.2708,
+        "min": 0.1429,
+        "max": 0.7143
+      },
+      "time_seconds": {
+        "mean": 25.263,
+        "stddev": 7.8657,
+        "min": 16.972,
+        "max": 34.833
+      },
+      "tokens": {
+        "mean": 29308.5,
+        "stddev": 356.3729,
+        "min": 28802,
+        "max": 29599
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.45",
+      "time_seconds": "+12.8",
+      "tokens": "+11490"
+    }
+  },
+  "notes": []
+}

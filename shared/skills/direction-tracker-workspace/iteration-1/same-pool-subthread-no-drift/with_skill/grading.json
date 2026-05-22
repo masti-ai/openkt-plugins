@@ -1,0 +1,40 @@
+{
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "expectations": [
+    {
+      "text": "DIRECTIONS.md was modified (a new entry was added)",
+      "passed": true,
+      "evidence": "output differs from input"
+    },
+    {
+      "text": "The new entry was added UNDER Pool 1 (auth refactor) \u2014 NOT as a new pool",
+      "passed": true,
+      "evidence": "JWT/refresh entry found inside Pool 1 section"
+    },
+    {
+      "text": "DIRECTIONS.md still has only Pool 1 (no Pool 2 introduced)",
+      "passed": true,
+      "evidence": "found 1 pool heading(s); expected 1"
+    },
+    {
+      "text": "No drift flag in reply (sub-thread of leading pool \u2014 should not flag)",
+      "passed": true,
+      "evidence": "no drift markers in reply"
+    },
+    {
+      "text": "Reply answers the JWT-refresh question normally",
+      "passed": true,
+      "evidence": "reply discusses JWT/refresh (matched 'refresh')"
+    },
+    {
+      "text": "New entry has a status flag",
+      "passed": true,
+      "evidence": "status flag present in DIRECTIONS.md"
+    }
+  ]
+}
