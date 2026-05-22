@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openkt-hermes"
+version = "0.1.0"
+description = "OpenKT memory provider for Hermes Agent — bring team-shared, project-scoped persistent memory to any Hermes session."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "OpenKT" }]
+keywords = ["hermes", "memory", "rag", "openkt", "agent", "knowledge-management"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Intended Audience :: Developers",
+]
+
+# Stdlib-only on the hot path — keeps install footprint negligible
+# and avoids pulling in a transitive that conflicts with Hermes's
+# tight pin set (Hermes pins httpx==0.28.1, etc.). We use urllib for
+# every network call.
+dependencies = []
+
+[project.optional-dependencies]
+test = [
+  "pytest>=7.0",
+  "pytest-mock>=3.0",
+]
+# httpx is OPTIONAL — only enabled if users explicitly want it for
+# connection-pool reuse. Default install stays stdlib-only.
+fast = ["httpx>=0.27"]
+
+[project.urls]
+Homepage = "https://openkt.ai"
+Repository = "https://github.com/masti-ai/openkt-hermes"
+Issues = "https://github.com/masti-ai/openkt-hermes/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+openkt_hermes = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+  "integration: hits live api.openkt.ai (requires OPENKT_API_KEY + OPENKT_TEST_PROJECT_ID)",
+]

@@ -1,0 +1,6 @@
+name: openkt
+version: 0.1.0
+description: "OpenKT memory provider — team-shared, project-scoped persistent memory across Hermes sessions. The only Hermes provider where your teammate's session enriches your agent's context."
+homepage: https://openkt.ai
+pip_dependencies:
+  - openkt-hermes
