@@ -1,0 +1,57 @@
+```json
+{
+  "checks": [
+    {
+      "name": "auth token",
+      "status": "pass",
+      "detail": "found"
+    },
+    {
+      "name": "auth /me",
+      "status": "pass",
+      "detail": "dev@openkt.ai"
+    }
+  ],
+  "harnesses": [
+    {
+      "detected": true,
+      "key": "claude_code",
+      "label": "Claude Code",
+      "signals": [
+        {"found": true, "label": "binary `claude` in PATH", "path": "/home/ubuntu/.local/bin/claude"},
+        {"found": true, "label": "config dir ~/.claude", "path": "/home/ubuntu/.claude"}
+      ]
+    },
+    {
+      "detected": true,
+      "key": "cursor",
+      "label": "Cursor",
+      "signals": [
+        {"found": true, "label": "config dir ~/.cursor", "path": "/home/ubuntu/.cursor"},
+        {"found": false, "label": "binary `cursor` in PATH", "path": ""},
+        {"found": false, "label": "macOS app bundle", "path": "/Applications/Cursor.app"}
+      ]
+    },
+    {
+      "detected": true,
+      "key": "codex",
+      "label": "Codex (OpenAI)",
+      "signals": [
+        {"found": true, "label": "config dir ~/.codex", "path": "/home/ubuntu/.codex"},
+        {"found": true, "label": "binary `codex` in PATH", "path": "/usr/bin/codex"}
+      ]
+    },
+    {
+      "detected": true,
+      "key": "opencode",
+      "label": "OpenCode",
+      "signals": [
+        {"found": true, "label": "config dir /home/ubuntu/.config/opencode", "path": "/home/ubuntu/.config/opencode"},
+        {"found": true, "label": "binary `opencode` in PATH", "path": "/home/ubuntu/.opencode/bin/opencode"}
+      ]
+    }
+  ]
+}
+```
+
+**Detected harnesses:** Claude Code, Cursor, Codex (OpenAI), OpenCode — all four. Auth passes as `dev@openkt.ai`.
