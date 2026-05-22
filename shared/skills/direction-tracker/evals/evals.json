@@ -1,0 +1,48 @@
+{
+  "skill_name": "direction-tracker",
+  "evals": [
+    {
+      "id": 1,
+      "name": "first-time-multi-thread-detection",
+      "prompt": "I've been working on the CLI auth refactor for a while and just got it tested end-to-end. While we're here, let me also start thinking about the marketing landing page redesign for next quarter. Where should the hero image go?",
+      "expected_output": "Agent should: (1) detect this is a multi-thread session (CLI work + marketing landing — orthogonal themes), (2) create DIRECTIONS.md if absent, with Pool 1 = CLI auth refactor (seeded from history) and Pool 2 = Marketing landing redesign, (3) flag the drift inline at the top of the reply (\"Note: you're on Pool 1 (CLI auth). This prompt is pulling toward a new Pool 2 (Marketing landing). I'll add it as SEED — say 'pivot' to switch focus or 'park it' to come back later\"), (4) answer the hero image question normally after the flag, (5) write the updated DIRECTIONS.md to disk.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "explicit-pool-view-query",
+      "prompt": "where am I in all this? what was I working on?",
+      "expected_output": "Agent should: (1) read existing DIRECTIONS.md from project root, (2) render the live pool view inline (preserve pool headers, theme descriptions, status flags, the 'leading edge' synthesis paragraph), (3) NOT append a new entry to DIRECTIONS.md (this is a view query, not a new direction), (4) NOT flag drift (no new direction opened), (5) end with a one-line orientation question like 'Want to refocus on Pool X, or stay on the current edge?'",
+      "files": [
+        {
+          "path": "DIRECTIONS.md",
+          "content": "# Directions — test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 — CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command — `DONE`\n- kt mcp serve with 11 tools — `DONE`\n- PR #30 awaiting merge — `LEADING`\n\n## Pool 2 — Marketing landing redesign\n*Theme: rework the openkt.ai landing for Q3 launch.*\n\n- Hero image direction — `SEED`\n\n## What's the leading edge right now?\n\n\"Just focus on the plugin so installation is easier\" — Pool 1."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "same-pool-subthread-no-drift",
+      "prompt": "Now let me also fix the JWT refresh edge case where the token is rotated mid-request. We're already in the auth refactor, this should slot in.",
+      "expected_output": "Agent should: (1) recognize this is a SUB-THREAD of the existing leading pool (auth refactor), NOT a new pool, (2) NOT flag drift (sub-threads of the leading pool don't drift), (3) add the JWT-refresh entry under Pool 1 with status LEADING, (4) answer the auth question normally without any drift-flag preamble, (5) update DIRECTIONS.md silently. Critical: the 'let me also' phrase is NOT a drift signal by itself — the orthogonality test matters more.",
+      "files": [
+        {
+          "path": "DIRECTIONS.md",
+          "content": "# Directions — test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 — CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- Non-interactive flags on every command — `DONE`\n- kt mcp serve with 11 tools — `LEADING`\n- PR #30 awaiting merge — `LEADING`"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "bulk-multi-direction-prompt",
+      "prompt": "Let me also start on analytics for the landing page, AND we should sync with the design team about the new brand colors, and oh I also want to fix the deployment pipeline that's been flaky.",
+      "expected_output": "Agent should: (1) detect THREE new threads in one message, each orthogonal to the leading pool, (2) open three pools (or merge into existing if matches found): Analytics, Design sync, Deploy pipeline, (3) NOT flag each individually (avoid drift-flag spam), (4) surface a single consolidated note at top: 'Added 3 new pools (Analytics, Design sync, Deploy pipeline). Pool 1 (current LEADING) is still active. Which is the new leading edge?', (5) update DIRECTIONS.md with all three new pools, (6) THEN answer the user's prompt by acknowledging all three and asking which to address first.",
+      "files": [
+        {
+          "path": "DIRECTIONS.md",
+          "content": "# Directions — test project\n\n**Last updated:** 2026-05-22\n\n## Pool 1 — CLI auth refactor\n*Theme: make the kt CLI agent-callable with JSON output and stable exit codes.*\n\n- PR #30 awaiting merge — `LEADING`\n\n## What's the leading edge right now?\n\nPool 1 (CLI auth refactor)."
+        }
+      ]
+    }
+  ]
+}

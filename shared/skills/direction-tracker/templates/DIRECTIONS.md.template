@@ -1,0 +1,35 @@
+# Directions — <project> active threads (living doc)
+
+**Last updated:** <DATE>
+
+**Purpose:** Step-back view of every direction this conversation has
+been pulled in, grouped into themes ("pools"), with status flags. If
+a direction is drifting, it surfaces here so it can be course-corrected.
+
+**How to read this:**
+- Each pool is one theme. Pools are numbered, never renumbered.
+- Each entry has a status flag: `LEADING`, `PARKED`, `BLOCKED`, `DONE`, `DRIFT`, `SEED`, `RESEARCH`.
+- The agent updates this file automatically — no manual entry.
+
+---
+
+## Pool 1 — <theme name>
+*Theme: <one-line theme description, quoting the user's framing if possible>.*
+
+- <entry one-liner> — `LEADING`
+
+---
+
+## What's drifting
+
+(Drift = mentioned but no follow-up across recent turns)
+
+*(none yet)*
+
+---
+
+## What's the leading edge right now?
+
+<User's most recent direction-setting message, quoted verbatim>
+
+So **Pool 1 (<theme>)** is the focus.
