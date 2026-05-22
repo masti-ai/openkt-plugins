@@ -1,0 +1,12 @@
+{
+  "name": "openkt",
+  "version": "0.1.0",
+  "description": "OpenKT (Open Knowledge Transfer) — persistent memory layer for Codex agents. SessionStart + UserPromptSubmit hooks only (Codex doesn't fire PostToolUse / PreCompact). Bring the kt CLI to drive auth + project binding.",
+  "author": {
+    "name": "Deepwork Labs",
+    "url": "https://openkt.ai"
+  },
+  "homepage": "https://openkt.ai",
+  "license": "Apache-2.0",
+  "hooks": "./hooks/hooks.json"
+}

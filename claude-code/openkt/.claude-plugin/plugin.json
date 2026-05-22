@@ -1,0 +1,27 @@
+{
+  "name": "openkt",
+  "version": "0.1.0",
+  "description": "OpenKT (Open Knowledge Transfer) — persistent memory + context layer for Claude Code agents. Captures decisions, anti-patterns, and non-obvious project facts across sessions; auto-injects relevant memories on every prompt.",
+  "author": {
+    "name": "Deepwork Labs",
+    "url": "https://openkt.ai"
+  },
+  "homepage": "https://openkt.ai",
+  "repository": "https://github.com/openkt-ai/claude-plugin",
+  "license": "Apache-2.0",
+  "keywords": [
+    "memory",
+    "context",
+    "knowledge-transfer",
+    "mcp",
+    "agent-memory"
+  ],
+  "requirements": {
+    "claude-code": ">=1.0.0",
+    "binaries": ["kt"]
+  },
+  "install": {
+    "before": "kt --version || (echo 'kt CLI not installed — run: curl -fsSL https://openkt.ai/install.sh | sh' >&2 && exit 1)",
+    "after": "kt doctor --json || echo 'kt doctor reported issues; run `kt login` if you haven\\'t already'"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          { "type": "command", "command": "kt prime" }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          { "type": "command", "command": "python3 ${CODEX_PLUGIN_ROOT}/hooks/recall.py" },
+          { "type": "command", "command": "python3 ${CODEX_PLUGIN_ROOT}/hooks/capture.py" }
+        ]
+      }
+    ]
+  }
+}
