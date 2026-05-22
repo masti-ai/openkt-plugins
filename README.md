@@ -27,12 +27,22 @@ openkt-plugins/
 │   ├── commands/             # Copied from ../shared/commands/
 │   └── README.md
 │
-└── codex/openkt/             # Codex plugin
-    ├── .codex-plugin/plugin.json
-    ├── hooks/
-    │   ├── hooks.json        # SessionStart + UserPromptSubmit ONLY
-    │   └── *.py              # recall.py, capture.py, _mcp_client.py, _capture_worker.py
-    └── README.md
+├── codex/openkt/             # Codex plugin
+│   ├── .codex-plugin/plugin.json
+│   ├── hooks/
+│   │   ├── hooks.json        # SessionStart + UserPromptSubmit ONLY
+│   │   └── *.py              # recall.py, capture.py, _mcp_client.py, _capture_worker.py
+│   └── README.md
+│
+├── hermes/                   # Hermes Agent (NousResearch) memory provider
+│   ├── src/openkt_hermes/    # Python pip-installable package
+│   ├── plugins/openkt/       # Drop-in for $HERMES_HOME/plugins/openkt/
+│   ├── tests/                # 59 unit + 2 gated integration tests
+│   ├── pyproject.toml
+│   └── README.md
+│
+├── .claude-plugin/marketplace.json   # Claude Code marketplace manifest
+└── .agents/plugins/marketplace.json  # Codex marketplace manifest
 ```
 
 ## Why separate plugins?
@@ -51,31 +61,41 @@ The Codex plugin omits the hooks Codex doesn't fire. Shared hook
 scripts (`recall.py`, `capture.py`) work in both because they read the
 same JSON event shape on stdin.
 
-## Marketplace install (when published)
+## Install
 
 ### Claude Code
 
 ```
-/plugin marketplace add openkt-ai/claude-plugin
-/plugin install openkt
+/plugin marketplace add masti-ai/openkt-plugins
+/plugin install openkt@openkt
 ```
 
 ### Codex
 
-The Codex plugin marketplace is still being formalized. Until then,
-clone directly:
+Codex's official directory is "coming soon" (per OpenAI's plugin docs).
+Until then, add this repo as a personal marketplace:
 
 ```
-git clone https://github.com/openkt-ai/codex-plugin ~/.codex/plugins/openkt
+/plugin marketplace add masti-ai/openkt-plugins
 ```
 
-And enable hooks:
+Enable plugin-bundled hooks:
 
 ```toml
 # ~/.codex/config.toml
 [features]
 plugin_hooks = true
 ```
+
+### Hermes (NousResearch hermes-agent)
+
+```
+pip install openkt-hermes
+export OPENKT_API_KEY="okt_pat_..."
+echo 'memory: {provider: openkt}' >> "$HERMES_HOME/config.yaml"
+```
+
+For team mode (shared memory across teammates), see `hermes/README.md`.
 
 ## Dev workflow
 
