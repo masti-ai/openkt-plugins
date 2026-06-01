@@ -1,0 +1,64 @@
+/* ============================================================================
+   OpenKT demo component layer — interactive pieces on top of openkt-pages.css.
+   Load AFTER openkt-pages.css. Provides the kit that makes a page a "demo":
+   tabbed sections, a knowledge-graph canvas + drill-down detail panel,
+   contributor (people) cards, and knowledge-base / conflict / fork cards.
+   Generalized from the flagship openkt-kb-test-report demo.
+   ============================================================================ */
+
+:root {
+  /* Fork accent (open disagreement) — a violet that reads distinct from amber
+     (supersede/conflict). Conflicts reuse the amber accent. */
+  --fork:      oklch(48% 0.15 300);
+  --fork-soft: oklch(95% 0.04 300);
+  --fork-line: oklch(85% 0.06 300);
+}
+
+/* ---- Tabs ---------------------------------------------------------------- */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 18px 0; border-bottom: 1px solid var(--line); }
+.tab {
+  background: none; border: none; padding: 10px 16px; cursor: pointer;
+  font: 14px var(--font-sans); color: var(--ink-2);
+  border-bottom: 2px solid transparent; border-radius: 0;
+}
+.tab:hover { color: var(--ink-0); }
+.tab.active { color: var(--amber-strong); border-bottom-color: var(--amber-strong); font-weight: 600; }
+.tab-panel[hidden] { display: none; }
+
+/* ---- Knowledge graph + drill-down detail --------------------------------- */
+.graphwrap { display: grid; grid-template-columns: 1fr 320px; gap: 10px; }
+.graph { height: 520px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper-1); }
+.detail {
+  height: 520px; overflow-y: auto; border: 1px solid var(--line);
+  border-radius: var(--radius); background: var(--paper-1); padding: 14px;
+}
+.detail .dtype  { font: 11px var(--font-mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.04em; }
+.detail .dtitle { font-weight: 600; margin: 4px 0 8px; color: var(--ink-0); }
+.detail .dbody  { font-size: 14px; color: var(--ink-1); line-height: 1.55; }
+.detail .dkb    { margin-top: 10px; font: 12px var(--font-mono); color: var(--amber-strong); }
+.dmuted { color: var(--ink-3); font-size: 13px; }
+@media (max-width: 760px) { .graphwrap { grid-template-columns: 1fr; } .graph, .detail { height: auto; min-height: 320px; } }
+
+/* ---- People (contributors) ----------------------------------------------- */
+.people { display: flex; flex-wrap: wrap; gap: 10px; }
+.person { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px; background: var(--paper-1); min-width: 180px; }
+.person > b { color: var(--ink-0); }
+.person .pm { font: 11px var(--font-mono); color: var(--ink-3); margin-left: 8px; }
+.ptopics { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* Topic chip — colored by topic (set background inline, text stays legible) */
+.chip { font: 10px var(--font-mono); color: #fff; padding: 1px 7px; border-radius: 10px; white-space: nowrap; }
+
+/* ---- Knowledge-base cards ------------------------------------------------ */
+.kb { border: 1px solid var(--line); border-radius: var(--radius); padding: 13px 17px; margin: 10px 0; background: var(--paper-1); }
+.kb h4 { margin: 0 0 6px; font-family: var(--font-sans); font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--ink-0); }
+.kb p  { color: var(--ink-1); }
+.kb .by { font: 11px var(--font-mono); color: var(--ink-3); font-weight: 400; }
+.dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex: none; }
+
+/* Conflict = a later fact superseded an earlier one (resolved). Amber. */
+.conf { font-size: 13px; color: var(--amber-strong); background: var(--amber-soft); border-radius: 6px; padding: 4px 10px; margin-top: 6px; }
+
+/* Fork = an OPEN disagreement between contributors (no winner). Violet. */
+.fork { font-size: 13px; color: var(--fork); background: var(--fork-soft); border: 1px solid var(--fork-line); border-radius: 6px; padding: 6px 10px; margin-top: 6px; }
+.fork .side { color: var(--ink-1); }

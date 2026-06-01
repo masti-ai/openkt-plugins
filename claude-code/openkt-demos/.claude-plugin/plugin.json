@@ -1,0 +1,21 @@
+{
+  "name": "openkt-demos",
+  "version": "0.1.0",
+  "description": "Build interactive, publishable HTML demos in the OpenKT design language. Turn specs, reports, audits, and analyses into polished single-page demos with tabs, knowledge-graph visualizations, drill-down panels, and warm-paper editorial styling — then export a self-contained file to host on your site.",
+  "author": {
+    "name": "Deepwork Labs",
+    "url": "https://openkt.ai"
+  },
+  "homepage": "https://openkt.ai",
+  "repository": "https://github.com/masti-ai/openkt-plugins",
+  "license": "Apache-2.0",
+  "keywords": [
+    "design-system",
+    "html",
+    "interactive",
+    "demo",
+    "data-visualization",
+    "reports",
+    "static-site"
+  ]
+}
