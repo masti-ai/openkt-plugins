@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DEMO TITLE — OpenKT</title>
+
+  <!-- OpenKT design system: tokens + base, then the interactive component layer.
+       Keep these next to the HTML (the scaffolder copies them in). For a single
+       self-contained file, run scripts/publish.py to inline them. -->
+  <link rel="stylesheet" href="openkt-pages.css">
+  <link rel="stylesheet" href="openkt-demo.css">
+  <!-- vis-network powers the knowledge graph. Omit if your demo has no graph. -->
+  <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+<main>
+  <div class="eyebrow">OPENKT DEMO</div>
+  <h1>Demo title</h1>
+  <p class="meta">one-line description · generated 2026-06-01</p>
+
+  <!-- Tabs: each button targets a panel by key. Drop the tabs block for a single-view demo. -->
+  <div class="tabs">
+    <button class="tab" data-tab="a">First</button>
+    <button class="tab" data-tab="b">Second</button>
+  </div>
+
+  <section data-panel="a">
+    <h3>Knowledge graph <span class="hint">— click any node to read it. ● memory · ▦ knowledge base · ◆ person</span></h3>
+    <div class="graphwrap">
+      <div class="graph" id="graphA"></div>
+      <div class="detail" id="detailA"><div class="dmuted">Click a node to inspect it.</div></div>
+    </div>
+
+    <h3>People</h3>
+    <div class="people">
+      <div class="person"><b>Contributor name</b><span class="pm">12 memories</span>
+        <div class="ptopics"><span class="chip" style="background:#c0612e">Topic A</span><span class="chip" style="background:#2e6fc0">Topic B</span></div>
+      </div>
+    </div>
+
+    <h3>Knowledge bases</h3>
+    <div class="kb">
+      <h4><span class="dot" style="background:#c0612e"></span>A knowledge base <span class="by">Alice, Bob</span></h4>
+      <p>The synthesized current-state summary for this topic goes here.</p>
+      <div class="conf">⟳ <b>What changed</b> → now <b>current position</b> (was <b>old position</b>)</div>
+      <div class="fork">⑂ FORK — <b>open disagreement</b><br>
+        <span class="side"><b>Alice:</b> position one</span><br>
+        <span class="side"><b>Bob:</b> position two</span></div>
+    </div>
+  </section>
+
+  <section data-panel="b">
+    <div class="card"><h3>Second view</h3><p>Use <code>.card</code>, <code>.callout</code>, <code>.stat-grid</code>, tables — whatever the content needs.</p></div>
+  </section>
+</main>
+
+<script src="openkt-demo.js"></script>
+<script>
+  OpenKTDemo.tabs();
+  OpenKTDemo.graph('graphA', 'detailA', {
+    nodes: [
+      { id: 'k1', type: 'kb', label: 'A knowledge base', body: 'Summary text.' },
+      { id: 'p1', type: 'person', label: 'Alice', body: '12 memories' },
+      { id: 'm1', type: 'memory', label: 'A raw memory written by Alice', body: 'Full raw memory text.', kb: 'A knowledge base' }
+    ],
+    edges: [ { from: 'm1', to: 'k1' }, { from: 'p1', to: 'm1' } ]
+  });
+</script>
+</body>
+</html>

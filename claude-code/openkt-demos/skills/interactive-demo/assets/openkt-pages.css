@@ -1,0 +1,209 @@
+/* ============================================================================
+   OpenKT page design system — canonical stylesheet for ALL agent-generated
+   interactive HTML pages (reports, audits, plans, design docs, dashboards).
+
+   SINGLE SOURCE OF TRUTH. Do not fork the palette into individual pages.
+   Faithfully distilled from the product dashboard:
+     /home/ubuntu/openkt/src/app/globals.css  (the Next.js app :root + components)
+   Standalone: assumes no Tailwind/reset, so a plain <h1>/<p>/<table> looks right.
+
+   Warm paper + ink, single terracotta-amber accent, OKLCH throughout.
+   Light only (dark mode was removed from the product 2026-04-19).
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap');
+
+:root {
+  /* Surfaces — paper tones, getting warmer as they recede */
+  --paper-0: oklch(99.2% 0.008 80);
+  --paper-1: oklch(97.5% 0.012 80);
+  --paper-2: oklch(95.0% 0.016 80);
+  --paper-3: oklch(92.0% 0.020 80);
+
+  /* Ink — neutral grayscale text, slightly warm */
+  --ink-0: oklch(18.0% 0.010 60);
+  --ink-1: oklch(32.0% 0.010 60);
+  --ink-2: oklch(48.0% 0.008 60);
+  --ink-3: oklch(64.0% 0.006 60);
+  --ink-4: oklch(82.0% 0.008 60);
+
+  /* Hairlines */
+  --line:        oklch(88.0% 0.012 80);
+  --line-strong: oklch(78.0% 0.014 80);
+
+  /* Terracotta amber — one accent, used sparingly */
+  --amber:        oklch(63.0% 0.155 50);
+  --amber-strong: oklch(54.0% 0.170 45);
+  --amber-soft:   oklch(94.5% 0.040 55);
+  --amber-line:   oklch(82.0% 0.095 55);
+
+  /* Memory-kind pairings (bg / fg / line) — match product chips exactly */
+  --kind-context-bg:   oklch(95.0% 0.038 15);
+  --kind-context-fg:   oklch(46.0% 0.155 18);
+  --kind-context-line: oklch(86.0% 0.060 15);
+  --kind-decision-bg:   oklch(95.0% 0.038 35);
+  --kind-decision-fg:   oklch(46.0% 0.155 38);
+  --kind-decision-line: oklch(86.0% 0.060 35);
+  --kind-anti-pattern-bg:   oklch(95.0% 0.030 220);
+  --kind-anti-pattern-fg:   oklch(46.0% 0.110 230);
+  --kind-anti-pattern-line: oklch(86.0% 0.055 220);
+  --kind-pattern-bg:   oklch(95.0% 0.030 150);
+  --kind-pattern-fg:   oklch(42.0% 0.090 150);
+  --kind-pattern-line: oklch(86.0% 0.050 150);
+  --kind-question-bg:   oklch(95.0% 0.035 280);
+  --kind-question-fg:   oklch(46.0% 0.140 285);
+  --kind-question-line: oklch(86.0% 0.060 280);
+  --kind-default-bg:   var(--paper-2);
+  --kind-default-fg:   var(--ink-1);
+  --kind-default-line: var(--line);
+
+  /* Semantic colors — dimmed, printed-ink feel */
+  --success: oklch(58.0% 0.110 145);
+  --warn:    oklch(70.0% 0.150 80);
+  --danger:  oklch(55.0% 0.180 28);
+  --info:    oklch(55.0% 0.090 240);
+  --success-soft: oklch(95.0% 0.035 145);
+  --warn-soft:    oklch(96.0% 0.045 85);
+  --danger-soft:  oklch(95.0% 0.035 28);
+  --info-soft:    oklch(95.0% 0.030 240);
+
+  /* Fonts */
+  --font-sans:  "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono:  "JetBrains Mono", ui-monospace, "SF Mono", "Menlo", monospace;
+  --font-serif: "Newsreader", "Source Serif Pro", ui-serif, Georgia, serif;
+
+  /* Legacy aliases (kept so product-derived snippets paste in cleanly) */
+  --warm-50: var(--paper-0); --warm-100: var(--paper-2); --warm-200: var(--line);
+  --warm-300: var(--line-strong); --warm-400: var(--ink-4); --warm-500: var(--ink-3);
+  --warm-600: var(--ink-2); --warm-700: var(--ink-2); --warm-800: var(--ink-1); --warm-900: var(--ink-0);
+  --accent: var(--amber); --accent-light: var(--amber-soft); --accent-muted: var(--amber-line);
+
+  /* Page rhythm */
+  --page-max: 960px;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; padding: 0;
+  background: var(--paper-0);
+  color: var(--ink-0);
+  font: 15px/1.6 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--amber-soft); color: var(--ink-0); }
+
+/* Page wrapper — wrap document body in <main> (or use .page) */
+main, .page { max-width: var(--page-max); margin: 0 auto; padding: 56px 36px 96px; }
+.page--wide { max-width: 1280px; }
+
+/* ---- Typography ---------------------------------------------------------- */
+h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 500; line-height: 1.2; color: var(--ink-0); }
+h1 { font-size: 2.0rem; margin: 0 0 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line-strong); }
+h2 { font-size: 1.4rem; margin: 2.4em 0 0.6em; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+h3 { font-size: 1.15rem; margin: 1.8em 0 0.5em; }
+h4 { font-size: 1.0rem; margin: 1.4em 0 0.4em; color: var(--ink-1); }
+p, li { font-size: 15px; color: var(--ink-1); }
+p { margin: 0.75em 0; }
+ul, ol { padding-left: 1.4em; margin: 0.6em 0; }
+li { margin: 0.25em 0; }
+strong { color: var(--ink-0); font-weight: 600; }
+em { color: var(--ink-1); }
+a { color: var(--amber-strong); text-decoration: none; border-bottom: 1px solid var(--amber-line); }
+a:hover { border-bottom-color: var(--amber-strong); }
+hr { border: 0; border-top: 1px solid var(--line); margin: 36px 0; }
+
+code { font-family: var(--font-mono); font-size: 0.85em; background: var(--paper-3); color: var(--ink-0); padding: 1px 6px; border-radius: 4px; }
+pre { background: var(--paper-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 22px; overflow-x: auto; margin: 1em 0; }
+pre code { background: transparent; padding: 0; font-size: 12.5px; color: var(--ink-1); line-height: 1.5; }
+
+blockquote { border-left: 3px solid var(--amber-strong); background: var(--amber-soft); margin: 1em 0; padding: 6px 0 6px 18px; border-radius: 0 8px 8px 0; color: var(--ink-2); }
+blockquote p { color: var(--ink-2); }
+
+/* ---- Tables -------------------------------------------------------------- */
+table { border-collapse: collapse; width: 100%; margin: 18px 0; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-1); }
+th { background: var(--paper-2); font-family: var(--font-sans); font-weight: 600; color: var(--ink-0); }
+tr:hover td { background: var(--paper-1); }
+
+/* ---- Small labels -------------------------------------------------------- */
+.eyebrow { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.meta  { font-family: var(--font-mono); font-size: 13px; color: var(--ink-3); margin: 0 0 32px; }
+.crumb { font-family: var(--font-mono); font-size: 13px; color: var(--ink-3); margin: 0 0 12px; }
+.crumb a { color: var(--ink-3); border-bottom: none; }
+.crumb a:hover { color: var(--amber-strong); }
+.font-serif, .font-display { font-family: var(--font-serif); }
+.mono { font-family: var(--font-mono); }
+
+/* ---- Tags & chips -------------------------------------------------------- */
+.tag { display: inline-block; font-family: var(--font-mono); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-right: 6px; background: var(--paper-3); color: var(--ink-2); }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px; border-radius: 999px; font-size: 12px; background: var(--paper-2); border: 1px solid var(--line); color: var(--ink-1); }
+.badge { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
+.badge-ok     { background: var(--success-soft); color: var(--success); }
+.badge-warn   { background: var(--warn-soft);    color: oklch(45% 0.13 70); }
+.badge-danger { background: var(--danger-soft);  color: var(--danger); }
+.badge-info   { background: var(--info-soft);    color: var(--info); }
+.badge-accent { background: var(--amber-soft);   color: var(--amber-strong); }
+
+/* Memory-kind chips — lowercase mono, paired hue (mirrors product .kind) */
+.kind { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.02em; padding: 3px 9px; border-radius: 4px; text-transform: lowercase;
+  background: var(--kind-default-bg); color: var(--kind-default-fg); border: 1px solid var(--kind-default-line); }
+.kind-context      { background: var(--kind-context-bg);      color: var(--kind-context-fg);      border-color: var(--kind-context-line); }
+.kind-decision     { background: var(--kind-decision-bg);     color: var(--kind-decision-fg);     border-color: var(--kind-decision-line); }
+.kind-anti-pattern { background: var(--kind-anti-pattern-bg); color: var(--kind-anti-pattern-fg); border-color: var(--kind-anti-pattern-line); }
+.kind-pattern      { background: var(--kind-pattern-bg);      color: var(--kind-pattern-fg);      border-color: var(--kind-pattern-line); }
+.kind-question     { background: var(--kind-question-bg);     color: var(--kind-question-fg);     border-color: var(--kind-question-line); }
+
+/* ---- Cards & panels ------------------------------------------------------ */
+.card { background: var(--paper-0); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; }
+.card-soft { background: var(--paper-1); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; }
+.card h3, .card h4 { margin-top: 0; }
+.panel { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.panel-head { background: var(--paper-2); padding: 12px 18px; border-bottom: 1px solid var(--line); font-family: var(--font-serif); font-size: 1.05rem; color: var(--ink-0); }
+.panel-body { padding: 18px; }
+
+/* ---- Callouts ------------------------------------------------------------ */
+.callout { border-left: 3px solid var(--line-strong); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 1em 0; background: var(--paper-1); color: var(--ink-1); font-size: 14px; }
+.callout-note    { border-left-color: var(--info);    background: var(--info-soft); }
+.callout-success { border-left-color: var(--success); background: var(--success-soft); }
+.callout-warn    { border-left-color: var(--warn);    background: var(--warn-soft); }
+.callout-danger  { border-left-color: var(--danger);  background: var(--danger-soft); }
+.callout-accent  { border-left-color: var(--amber-strong); background: var(--amber-soft); }
+.callout strong { color: var(--ink-0); }
+
+/* "do this" dashed hint (mirrors product .hint) */
+.hint { border: 1px dashed var(--line-strong); border-radius: 8px; padding: 12px 16px; font-size: 0.8125rem; color: var(--ink-2); background: transparent; }
+.hint code { margin-left: 8px; background: var(--paper-1); color: var(--ink-0); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); }
+
+/* ---- KPI / stat tiles ---------------------------------------------------- */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 18px 0; }
+.stat { background: var(--paper-1); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+.stat-value { font-family: var(--font-serif); font-size: 1.9rem; line-height: 1; color: var(--ink-0); }
+.stat-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); margin-top: 8px; }
+.stat-accent .stat-value { color: var(--amber-strong); }
+
+/* ---- Layout helpers ------------------------------------------------------ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.muted { color: var(--ink-3); }
+.right { text-align: right; }
+.center { text-align: center; }
+@media (max-width: 720px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } main, .page { padding: 36px 20px 72px; } }
+
+/* ---- Motion (cheap, reduced-motion-safe) --------------------------------- */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: fadeIn 0.4s ease-out both; }
+.focus-ring:focus-visible { outline: 2px solid color-mix(in oklab, var(--amber) 40%, transparent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .animate-fade-in { animation: none; } }
+
+/* ---- Print --------------------------------------------------------------- */
+@media print {
+  body { background: #fff; }
+  main, .page { max-width: none; padding: 0; }
+  a { color: var(--ink-0); border-bottom: none; }
+  .card, .panel, .stat { break-inside: avoid; }
+}

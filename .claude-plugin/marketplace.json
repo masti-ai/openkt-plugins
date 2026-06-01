@@ -15,6 +15,16 @@
         "name": "Deepwork Labs"
       },
       "homepage": "https://openkt.ai"
+    },
+    {
+      "name": "openkt-demos",
+      "source": "./claude-code/openkt-demos",
+      "description": "Build interactive, publishable HTML demos in the OpenKT design language — tabs, knowledge-graph visualizations, drill-down panels, warm-paper editorial styling. Turn specs, reports, and analyses into shareable single-page demos, then export a self-contained file for your website.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Deepwork Labs"
+      },
+      "homepage": "https://openkt.ai"
     }
   ]
 }
