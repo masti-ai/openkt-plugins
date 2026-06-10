@@ -1,6 +1,6 @@
 # Recommendation: json-render as the foundation of the Deepwork generative UI library
 
-**Bead:** op-7x9.10 · **Author:** polecat obsidian · **Date:** 2026-06-10
+**Bead:** internal tracker · **Author:** research agent · **Date:** 2026-06-10
 **Subject:** `vercel-labs/json-render` (json-render.dev, ~15K stars) evaluated as
 the base layer for the Deepwork generative UI library for client agents, with a
 working Open Field prototype.
@@ -62,7 +62,7 @@ catalog.ts ──prompt()──▶ system prompt ──▶ [agent] ──▶ JSO
    Next.js, **Ink (terminal TUI)**, React PDF, React Email, Satori (SVG/PNG),
    Remotion (video), React Three Fiber. Our agents span harnesses and surfaces
    (Claude Code, web chat, terminal, docs) — write the Open Field catalog once,
-   bind it per surface. This directly de-risks op-7x9.11 (MCP Apps) and the
+   bind it per surface. This directly de-risks internal tracker (MCP Apps) and the
    multi-harness plugin vision.
 
 3. **Streaming is native.** Agent output is a stream; json-render's patch protocol
@@ -70,7 +70,7 @@ catalog.ts ──prompt()──▶ system prompt ──▶ [agent] ──▶ JSO
    "thinks") is the default path, not a bolt-on.
 
 4. **Code export exists.** `@json-render/codegen` generates source from a tree —
-   useful for op-7x9.12 (json-render demos → ops tooling) and for "eject to a
+   useful for internal tracker (json-render demos → ops tooling) and for "eject to a
    static page" flows.
 
 5. **Permissive license.** Apache-2.0 (see below) — we can vendor, fork, and ship
@@ -90,7 +90,7 @@ A real Vite + React 19 + TypeScript app under `genui/json-render-openfield/`:
   classes (no inline palette), + action handlers.
 - **`openfield.css`** — the Open Field tokens vendored from openkt-demos, *plus* a
   completed component layer (callout/badge/stat/table/layout) that was documented
-  but missing from the source (bead op-xie).
+  but missing from the source .
 - **`specs/memory-dashboard.ts`** — an agent-style spec: an OpenKT "Pricing
   knowledge base" synthesis page (ASCII header, KPI stats, kind chips, a resolved
   conflict callout, a contributor table, action buttons).
@@ -139,10 +139,10 @@ redistribute source.)
 
 - **Maturity vs. our timeline.** 15K stars but young. The facade + pinning makes
   this tolerable; revisit at their 1.0.
-- **MCP Apps fit (op-7x9.11).** Does `<Renderer>` run cleanly inside an MCP App
+- **MCP Apps fit (internal tracker).** Does `<Renderer>` run cleanly inside an MCP App
   sandbox / claude.ai web? Needs the quartz prototype to confirm — but the
   multi-target story (incl. plain React + Satori) is encouraging.
-- **openfield as source of truth (op-7x9.5).** This prototype vendored a *copy* of
+- **openfield as source of truth (internal tracker).** This prototype vendored a *copy* of
   the tokens. The completed component layer here should be upstreamed into
   `masti-ai/openfield` and re-vendored, not maintained in two places.
 
@@ -150,13 +150,13 @@ redistribute source.)
 
 1. **Upstream the completed Open Field component layer** (`openfield.css` here →
    `masti-ai/openfield`), fixing bead **op-xie**, then have this prototype and
-   openkt-demos both vendor it (op-7x9.5).
+   openkt-demos both vendor it (internal tracker).
 2. **Stand up a thin `@deepwork/genui` facade** wrapping `@json-render/core` +
    `@json-render/react`, exporting the Open Field catalog + registry, so every
-   consumer (living-pages op-7x9.6, ops tooling op-7x9.12, MCP Apps op-7x9.11)
+   consumer (living-pages internal tracker, ops tooling internal tracker, MCP Apps internal tracker)
    reads one source.
 3. **Wire a live agent** (MiniMax M2.5 via DI, or Claude) to `catalog.prompt()`
    and stream real output through `createSpecStreamCompiler` — replace the
    hand-authored spec with a generated one.
-4. **Test the React renderer inside an MCP App** (hand to op-7x9.11 / quartz) to
+4. **Test the React renderer inside an MCP App** (hand to internal tracker / quartz) to
    confirm the claude.ai-web delivery path.

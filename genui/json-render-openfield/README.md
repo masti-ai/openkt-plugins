@@ -70,4 +70,4 @@ reason this is a strong foundation — see the memo.
 - `.callout / .badge / .stat / table` classes were documented in the openkt-demos
   `components.md` but missing from the source CSS — filed as bead **op-xie**. The
   complete component layer added here (`openfield.css`) is the reference fix to
-  upstream into `masti-ai/openfield` (epic op-7x9.5).
+  upstream into `masti-ai/openfield` (epic internal tracker).
