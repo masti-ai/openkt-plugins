@@ -1,7 +1,7 @@
 # Research Memo: MCP Apps (ext-apps) as a UI Delivery Surface
 
-**Bead:** op-7x9.11 · **Author:** polecat quartz (rig: openkt_plugins) · **Date:** 2026-06-10
-**Companion track:** op-7x9.10 (json-render evaluation) — per owner directive, MCP Apps +
+**Date:** 2026-06-10
+**Companion track:** internal tracker (json-render evaluation) — per owner directive, MCP Apps +
 json-render + generative UI are **one track**; this memo is the joint synthesis.
 **Status:** Research complete. Recommendation: **ADOPT** MCP Apps as the delivery surface,
 with json-render + an Open Field catalog as the rendering layer.
@@ -140,7 +140,7 @@ These are **complementary layers of one track, not competitors**:
   host↔UI bridge. Answers *"how does interactive UI get into claude.ai and stay safe?"*
 - **json-render + Open Field = the rendering layer:** answers *"what does the agent emit,
   and how do we keep it on-brand and safe?"* The catalog guardrails (Zod-schema'd props,
-  "design language not optional") match Open Field's principles from the op-7x9.10 eval.
+  "design language not optional") match Open Field's principles from the internal tracker eval.
 
 This split is the **inferred architectural recommendation** of this research — no source
 documents json-render-inside-an-MCP-Apps-iframe as a *shipped* pattern (see §7), but both
@@ -176,7 +176,7 @@ Concrete plan:
    safest first cut is to **bundle json-render + the Open Field catalog directly into the
    `ui://` HTML resource** rather than fetching the catalog at runtime. Runtime fetch would
    require `connectDomains`/`resourceDomains` the host may not honor (see open Qs §6).
-3. **Reuse the Open Field catalog from op-7x9.10.** The catalog prototyped there
+3. **Reuse the Open Field catalog from internal tracker.** The catalog prototyped there
    (Card/Table/KindChip/Stat/Callout/Badge/AsciiArt/Eyebrow over vendored openfield tokens)
    becomes the json-render registry that renders inside the iframe. **One catalog, two
    consumers** (DRY): the standalone Vite demo *and* the MCP Apps resource.
@@ -193,11 +193,11 @@ Concrete plan:
 **Why now:** MCP Apps is the *only* official, cross-vendor, already-shipping path to
 interactive UI inside claude.ai. Building the Deepwork genui library on it (delivery) +
 json-render/Open Field (rendering) means **write-once UI across every major MCP host**, with
-**zero license risk** and full alignment with the op-7x9.10 json-render direction.
+**zero license risk** and full alignment with the internal tracker json-render direction.
 
 ---
 
-## 6. Open questions (carry into design / op-7x9.4–.6)
+## 6. Open questions (carry into design / internal tracker–.6)
 
 1. Does claude.ai web's **domain-signing / CSP enforcement** (and its `frameDomains` gap)
    force the renderer to be **fully bundled** into the `ui://` HTML, or can it fetch the
