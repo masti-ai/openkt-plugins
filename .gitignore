@@ -5,3 +5,6 @@ __pycache__/
 *.swp
 .vscode/
 .idea/
+
+# Worktree-local polecat context (not part of the product)
+/CLAUDE.md
