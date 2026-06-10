@@ -1,0 +1,41 @@
+# Deepwork Labs — Design System
+
+> Machine-readable index. Fetch this file first; it is tiny by design.
+> Full guide: README.md. Hub page (open in browser): deepwork-labs.html
+
+## How to read this system (agents)
+- To LEARN the system, read source, not pages: mix.css, loading.js, _art.js, pg-app.css, pg-shell.js. All ≤28KB.
+- HTML pages are compositions — open in a browser, do NOT fetch as text.
+- NEVER fetch build artifacts whole (hundreds of KB): "Deepwork AI - Landing (standalone).html".
+- Fastest "use it" path: mix.css (tokens) → SKILL.md (rules) → the one CSS/JS file for your task.
+
+## Foundations (read to learn)
+- mix.css        ~12KB  all design tokens + base components (source of truth)
+- loading.js     ~6KB   spinners / bars / streaming typer / agent faces
+- _art.js        ~14KB  generative ASCII art library
+- SKILL.md       ~2KB   load order + rules
+
+## Application layer (build products)
+- pg-app.css     ~28KB  shell, sidebar, cards, data table, drawer, pills, pipeline
+- pg-shell.js    ~9KB   injects sidebar + Cmd-K palette (reads <body data-screen>)
+- pg-detail.css  ~13KB  editor + modals + realistic shelf
+- pg-detail.js   ~21KB  planogram editor logic
+- pg-review.js   ~22KB  approval workspace (focus/batch, reasoning, bulk)
+- pg-products.js pg-catalog.js pg-report.js pg-pdf.js pg-ask.js  per-screen logic
+
+## Entry points (open in browser, do not fetch whole)
+- deepwork-labs.html   design-system hub
+- index.html, Open Field.html   foundations home + spec
+- preview/*.html   one component per page
+
+## Products & artifacts (open in browser)
+- planogram-*.html   Planogram product (9 screens)
+- openkt-landing.html, planogram-landing.html   marketing
+- template-article.html, template-feed.html   compositions
+
+## Do NOT fetch whole (generated)
+- Deepwork AI - Landing (standalone).html   ~769KB self-contained bundle
+
+## Load order
+mix.css → _art.js → loading.js  (foundations)
+pg-app.css → pg-shell.js  (apps; shell auto-injects from <body data-screen="…">)

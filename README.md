@@ -16,7 +16,9 @@ openkt-plugins/
 ├── shared/                   # Single source of truth for cross-harness assets
 │   ├── hooks/                # Python hook scripts (harness-agnostic)
 │   ├── skills/               # Markdown skills (memory-curator, recall, doctor)
-│   └── commands/             # Slash command markdown
+│   ├── commands/             # Slash command markdown
+│   └── vendor/               # Pinned third-party assets (see shared/vendor/README.md)
+│       └── openfield/        # masti-ai/openfield design system, vendored + synced
 │
 ├── claude-code/openkt/       # Claude Code plugin
 │   ├── .claude-plugin/plugin.json
@@ -122,6 +124,20 @@ When updating shared assets:
    cp shared/hooks/*.py codex/openkt/hooks/
    ```
 3. Test in your harness (see per-plugin README).
+
+### Updating vendored design-system assets
+
+The OpenKT design system (tokens, ASCII art, loading vocabulary, app shell)
+lives upstream in [masti-ai/openfield](https://github.com/masti-ai/openfield)
+and is vendored under `shared/vendor/openfield/` at a pinned commit. The
+openkt-demos `interactive-demo` skill consumes the foundation files from there.
+
+```
+# Re-pin to the upstream tip and refresh every consumer in one run:
+shared/vendor/sync-openfield.sh --update
+```
+
+See `shared/vendor/README.md` for the pin, the consumer mapping, and rules.
 
 ## Versioning
 
