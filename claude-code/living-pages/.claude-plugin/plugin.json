@@ -1,0 +1,10 @@
+{
+  "name": "living-pages",
+  "description": "Pages you can mark up. Turns any folder of HTML into a live commenting surface — highlight text, select elements, leave notes. Your agent reads the margins and revises; the page reloads with a walkthrough of what changed.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Deepwork Labs"
+  },
+  "homepage": "https://openkt.ai",
+  "license": "MIT"
+}

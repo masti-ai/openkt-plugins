@@ -11,3 +11,8 @@ __pycache__/
 .runtime/
 .beads/
 CLAUDE.md
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
