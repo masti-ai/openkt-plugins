@@ -5,3 +5,9 @@ __pycache__/
 *.swp
 .vscode/
 .idea/
+
+# Gas Town polecat worktree runtime state (local agent artifacts, never part of the repo)
+.claude/
+.runtime/
+.beads/
+CLAUDE.md
