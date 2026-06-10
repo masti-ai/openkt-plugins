@@ -12,8 +12,32 @@
       {
         "matcher": "*",
         "hooks": [
-          { "type": "command", "command": "python3 ${CODEX_PLUGIN_ROOT}/hooks/recall.py" },
-          { "type": "command", "command": "python3 ${CODEX_PLUGIN_ROOT}/hooks/capture.py" }
+          { "type": "command", "command": "python3 ${PLUGIN_ROOT}/hooks/recall.py" },
+          { "type": "command", "command": "python3 ${PLUGIN_ROOT}/hooks/capture.py" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "python3 ${PLUGIN_ROOT}/hooks/sync_native_memory.py" }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          { "type": "command", "command": "python3 ${PLUGIN_ROOT}/hooks/pre_compact.py" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          { "type": "command", "command": "python3 ${PLUGIN_ROOT}/hooks/session_end.py" }
         ]
       }
     ]
