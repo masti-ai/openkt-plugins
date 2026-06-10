@@ -1,7 +1,7 @@
 {
   "name": "openkt",
   "version": "0.1.0",
-  "description": "OpenKT (Open Knowledge Transfer) — persistent memory layer for Codex agents. SessionStart + UserPromptSubmit hooks. Bring the kt CLI to drive auth + project binding.",
+  "description": "OpenKT (Open Knowledge Transfer) — persistent memory layer for Codex agents. SessionStart, UserPromptSubmit, PostToolUse, PreCompact, and Stop hooks. Bring the kt CLI to drive auth + project binding.",
   "author": {
     "name": "Deepwork Labs",
     "url": "https://openkt.ai"

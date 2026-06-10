@@ -29,9 +29,10 @@ openkt-plugins/
 │
 ├── codex/openkt/             # Codex plugin
 │   ├── .codex-plugin/plugin.json
+│   ├── .mcp.json             # Bundled MCP servers: remote + local kt mcp serve
 │   ├── hooks/
-│   │   ├── hooks.json        # SessionStart + UserPromptSubmit ONLY
-│   │   └── *.py              # recall.py, capture.py, _mcp_client.py, _capture_worker.py
+│   │   ├── hooks.json        # SessionStart, UserPromptSubmit, PostToolUse, PreCompact, Stop
+│   │   └── *.py              # Copied from ../shared/hooks/ (same scripts as Claude plugin)
 │   └── README.md
 │
 ├── hermes/                   # Hermes Agent (NousResearch) memory provider
@@ -53,13 +54,15 @@ Each harness has its own plugin format and hook lifecycle:
 |------|------------|-------|
 | SessionStart | ✓ | ✓ |
 | UserPromptSubmit | ✓ | ✓ |
-| PostToolUse | ✓ | ✗ (not in spec) |
-| PreCompact | ✓ | ✗ |
-| SessionEnd | ✓ | ✗ |
+| PostToolUse | ✓ | ✓ |
+| PreCompact | ✓ | ✓ |
+| Session end | ✓ (`SessionEnd`) | ✓ (`Stop`) |
 
-The Codex plugin omits the hooks Codex doesn't fire. Shared hook
-scripts (`recall.py`, `capture.py`) work in both because they read the
-same JSON event shape on stdin.
+Both harnesses fire the same lifecycle; only the session-end hook name
+differs (Claude `SessionEnd`, Codex `Stop`). The shared hook scripts
+work in both because they read the same JSON event shape on stdin.
+`sync_native_memory.py` only acts on Claude's native-memory paths, so
+it's a harmless no-op on Codex — bundled for parity and forward-compat.
 
 ## Install
 
@@ -84,8 +87,16 @@ Enable plugin-bundled hooks:
 ```toml
 # ~/.codex/config.toml
 [features]
-plugin_hooks = true
+hooks = true
 ```
+
+Then trust the plugin's hooks (Codex won't run them until you do):
+
+```
+/hooks
+```
+
+Approve the OpenKT hooks, and restart Codex.
 
 ### Hermes (NousResearch hermes-agent)
 
@@ -108,9 +119,7 @@ When updating shared assets:
    cp shared/hooks/*.py claude-code/openkt/hooks/
    cp -r shared/skills/* claude-code/openkt/skills/
    cp shared/commands/*.md claude-code/openkt/commands/
-   cp shared/hooks/recall.py shared/hooks/capture.py \
-      shared/hooks/_mcp_client.py shared/hooks/_capture_worker.py \
-      shared/hooks/_sync_worker.py codex/openkt/hooks/
+   cp shared/hooks/*.py codex/openkt/hooks/
    ```
 3. Test in your harness (see per-plugin README).
 
