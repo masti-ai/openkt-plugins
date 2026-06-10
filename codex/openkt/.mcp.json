@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "openkt": {
+      "url": "https://api.openkt.ai/mcp",
+      "transport": "http",
+      "headers": {
+        "Authorization": "Bearer ${env:OPENKT_TOKEN}"
+      },
+      "description": "OpenKT memory layer — kt_recall, kt_save_memory, kt_search_memories, kt_forget_memory"
+    },
+    "openkt-local": {
+      "command": "kt",
+      "args": ["mcp", "serve"],
+      "description": "Local kt MCP server — exposes auth/install/init/memory tools (kt_doctor, kt_login, kt_install_harness, etc.)"
+    }
+  }
+}

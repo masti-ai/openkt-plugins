@@ -6,6 +6,12 @@ __pycache__/
 .vscode/
 .idea/
 
+# Gas Town polecat worktree runtime state (local agent artifacts, never part of the repo)
+.claude/
+.runtime/
+.beads/
+CLAUDE.md
+
 # Beads / Dolt files (added by bd init)
 .dolt/
 *.db
