@@ -672,13 +672,13 @@
   // The tab title reflects what state the batch is in, so the user can tell
   // at a glance from another tab. Precedence (highest first):
   //   ●  changes ready (pendingReload active)
-  //   ⏳  agent is processing a submitted batch
+  //   …  agent is processing a submitted batch
   //   (no prefix) — idle
   function syncTitle() {
     if (!originalTitle) return;
     let prefix = "";
     if (pendingReload) prefix = "● ";
-    else if (lastSubmittedBatch) prefix = "⏳ ";
+    else if (lastSubmittedBatch) prefix = "… ";
     document.title = prefix + originalTitle;
   }
 
