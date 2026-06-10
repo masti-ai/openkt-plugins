@@ -1,0 +1,5 @@
+# openfield vendor lock — managed by shared/vendor/sync-openfield.sh
+# Do not edit by hand; run the sync script to update the pin.
+repo=https://github.com/masti-ai/openfield.git
+ref=main
+commit=7a82dd5a832f0e424254b884ebb9d363902eba20
