@@ -1,0 +1,342 @@
+/* ============================================================================
+   OPEN FIELD · merged design tokens
+   Deepwork Labs (ASCII art + loading) × OpenKT (editorial paper + ink)
+   ----------------------------------------------------------------------------
+   Foundation : OpenKT warm cream paper, ink ramp, one amber accent.
+   Type       : Newsreader serif (titles) · Inter (body) · JetBrains Mono (code/labels/art)
+   Color      : amber accent + 5 Deepwork earth categories + OpenKT memory kinds
+   Art        : Deepwork generative ASCII, slot-mounted, colored from the palette
+   ============================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap");
+
+:root {
+  /* ── PAPER & INK (OpenKT) ───────────────────────────────────── */
+  --paper-0: oklch(99.2% 0.008 80);
+  --paper-1: oklch(97.5% 0.012 80);
+  --paper-2: oklch(95.0% 0.016 80);
+  --paper-3: oklch(92.0% 0.020 80);
+
+  --ink-0:   oklch(18.0% 0.010 60);
+  --ink-1:   oklch(32.0% 0.010 60);
+  --ink-2:   oklch(48.0% 0.008 60);
+  --ink-3:   oklch(64.0% 0.006 60);
+  --ink-4:   oklch(82.0% 0.008 60);
+
+  --line:        oklch(88.0% 0.012 80);
+  --line-strong: oklch(78.0% 0.014 80);
+
+  /* ── THE ONE ACCENT — terracotta amber (OpenKT) ─────────────── */
+  --amber:        oklch(63.0% 0.155 50);
+  --amber-strong: oklch(54.0% 0.170 45);
+  --amber-soft:   oklch(94.5% 0.040 55);
+  --amber-line:   oklch(82.0% 0.095 55);
+
+  /* ── FIVE EARTH CATEGORIES (Deepwork) ───────────────────────────
+     Each: mark (saturated) · soft (tinted paper) · deep (inverted surface). */
+  --c-clay:      #b85e3a;  --c-clay-soft:  #f5e2d4;  --c-clay-deep:  #8a3e1f;
+  --c-ochre:     #b8932a;  --c-ochre-soft: #f4ead0;  --c-ochre-deep: #7a6118;
+  --c-sand:      #a88563;  --c-sand-soft:  #f1e6d6;  --c-sand-deep:  #6e553d;
+  --c-moss:      #6b8159;  --c-moss-soft:  #dde6d4;  --c-moss-deep:  #3f4f33;
+  --c-slate:     #4f6471;  --c-slate-soft: #d8dfe5;  --c-slate-deep: #2a3640;
+
+  /* ── MEMORY KINDS (OpenKT) ──────────────────────────────────── */
+  --kind-context-bg: oklch(95.0% 0.038 15);   --kind-context-fg: oklch(46.0% 0.155 18);   --kind-context-line: oklch(86.0% 0.060 15);
+  --kind-decision-bg: oklch(95.0% 0.038 35);  --kind-decision-fg: oklch(46.0% 0.155 38);  --kind-decision-line: oklch(86.0% 0.060 35);
+  --kind-anti-pattern-bg: oklch(95.0% 0.030 220); --kind-anti-pattern-fg: oklch(46.0% 0.110 230); --kind-anti-pattern-line: oklch(86.0% 0.055 220);
+  --kind-pattern-bg: oklch(95.0% 0.030 150);  --kind-pattern-fg: oklch(42.0% 0.090 150);  --kind-pattern-line: oklch(86.0% 0.050 150);
+  --kind-question-bg: oklch(95.0% 0.035 280); --kind-question-fg: oklch(46.0% 0.140 285); --kind-question-line: oklch(86.0% 0.060 280);
+
+  /* ── SIGNAL ─────────────────────────────────────────────────── */
+  --good:  var(--c-moss);
+  --warn:  var(--c-ochre);
+  --error: #b04030;
+  --hl:    #f5e98a;
+
+  /* ── TYPE ───────────────────────────────────────────────────── */
+  --font-display: "Newsreader", ui-serif, Georgia, serif;
+  --font-sans:    "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --t-hero:    56px;
+  --t-display: 38px;
+  --t-h1:      30px;
+  --t-h2:      22px;
+  --t-h3:      17px;
+  --t-body:    16px;
+  --t-small:   13px;
+  --t-micro:   11px;
+  --t-tiny:    10px;
+
+  --tr-tight: -0.02em;
+  --tr-snug:  -0.01em;
+  --tr-mono:   0.16em;
+
+  /* ── SPACING (4px grid) ─────────────────────────────────────── */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px;
+  --sp-6:32px; --sp-7:48px; --sp-8:64px; --sp-9:96px;
+
+  /* ── SHAPE — OpenKT modest radii; art panels stay square ────── */
+  --r-xs:4px; --r-sm:6px; --r-md:8px; --r-pill:999px;
+
+  --rule:        1px solid var(--line);
+  --rule-strong: 1px solid var(--line-strong);
+  --rule-ink:    1px solid var(--ink-0);
+  --rule-dashed: 1px dashed var(--line-strong);
+
+  /* ── MOTION ─────────────────────────────────────────────────── */
+  --ease:     cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 0.12s;
+  --dur:      0.24s;
+
+  /* surfaces that flip in dark panels */
+  --bg: var(--paper-0);
+}
+
+/* ── DARK ACCENT PANEL — inverted surface for colored ASCII ───── */
+.dark {
+  --paper-0: oklch(20.0% 0.012 60);
+  --paper-1: oklch(24.0% 0.014 60);
+  --paper-2: oklch(28.0% 0.014 60);
+  --paper-3: oklch(32.0% 0.014 60);
+  --ink-0:   oklch(94.0% 0.010 80);
+  --ink-1:   oklch(82.0% 0.010 80);
+  --ink-2:   oklch(68.0% 0.010 80);
+  --ink-3:   oklch(54.0% 0.010 80);
+  --line:        oklch(36.0% 0.012 60);
+  --line-strong: oklch(46.0% 0.014 60);
+  --amber-soft:  oklch(34.0% 0.060 50);
+  background: var(--paper-0);
+  color: var(--ink-0);
+}
+
+/* ── RESET ──────────────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  background: var(--paper-0);
+  color: var(--ink-0);
+  font-family: var(--font-sans);
+  font-size: var(--t-body);
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; background: none; border: none; color: inherit; cursor: pointer; }
+::selection { background: var(--amber-soft); color: var(--ink-0); }
+
+/* ── TYPE PRESETS ───────────────────────────────────────────── */
+.serif { font-family: var(--font-display); }
+.mono  { font-family: var(--font-mono); }
+.dim   { color: var(--ink-2); }
+.faint { color: var(--ink-3); }
+
+.t-hero    { font-family: var(--font-display); font-size: var(--t-hero);    font-weight: 500; line-height: 1.02; letter-spacing: var(--tr-tight); }
+.t-display { font-family: var(--font-display); font-size: var(--t-display); font-weight: 500; line-height: 1.08; letter-spacing: var(--tr-snug); }
+.t-h1      { font-family: var(--font-display); font-size: var(--t-h1);      font-weight: 500; line-height: 1.12; letter-spacing: var(--tr-snug); }
+.t-h2      { font-family: var(--font-display); font-size: var(--t-h2);      font-weight: 500; line-height: 1.2; }
+.t-h3      { font-family: var(--font-sans);    font-size: var(--t-h3);      font-weight: 600; line-height: 1.3; letter-spacing: var(--tr-snug); }
+.t-body    { font-size: var(--t-body); line-height: 1.65; color: var(--ink-1); }
+.t-lede    { font-size: 19px; line-height: 1.6; color: var(--ink-1); }
+.t-small   { font-size: var(--t-small); color: var(--ink-2); }
+
+/* ── EYEBROW — the universal mono kicker ────────────────────── */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--t-micro); font-weight: 500;
+  color: var(--ink-2);
+  letter-spacing: var(--tr-mono); text-transform: uppercase;
+  display: inline-flex; align-items: baseline; gap: 7px;
+}
+.eyebrow .dot { font-size: 7px; transform: translateY(-2px); }
+.is-clay  { color: var(--c-clay); }
+.is-ochre { color: var(--c-ochre); }
+.is-sand  { color: var(--c-sand); }
+.is-moss  { color: var(--c-moss); }
+.is-slate { color: var(--c-slate); }
+
+/* ── ART SLOT — Deepwork generative ASCII ───────────────────── */
+.art {
+  font-family: var(--font-mono);
+  white-space: pre;
+  user-select: none;
+  line-height: 1.0;
+  font-size: 11px;
+  overflow: hidden;
+}
+
+/* ── DIVIDERS ───────────────────────────────────────────────── */
+.divider { border: none; border-top: var(--rule); margin: var(--sp-6) 0; }
+.divider.ascii {
+  text-align: center; font-family: var(--font-mono); font-size: 10px;
+  color: var(--ink-4); letter-spacing: 0.4em; border: none; user-select: none;
+}
+.divider-labeled { display: flex; align-items: center; gap: var(--sp-3); margin: var(--sp-7) 0; }
+.divider-labeled::before, .divider-labeled::after { content: ""; flex: 1; border-top: var(--rule); }
+.divider-labeled .lbl {
+  font-family: var(--font-mono); font-size: var(--t-tiny);
+  color: var(--ink-2); letter-spacing: var(--tr-mono); text-transform: uppercase;
+}
+
+/* ── BUTTONS ────────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 16px; border-radius: var(--r-sm);
+  border: 1px solid var(--line-strong); color: var(--ink-0);
+  background: var(--paper-0);
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.btn:hover { background: var(--paper-2); border-color: var(--ink-3); }
+.btn-primary { background: var(--amber); border-color: var(--amber); color: #fff; }
+.btn-primary:hover { background: var(--amber-strong); border-color: var(--amber-strong); }
+.btn-mono { font-family: var(--font-mono); font-size: 13px; }
+.btn-ghost { border-color: transparent; background: transparent; }
+.btn-ghost:hover { background: var(--paper-2); border-color: transparent; }
+
+/* ── KIND CHIPS (OpenKT) ────────────────────────────────────── */
+.kind {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.02em; padding: 3px 9px; border-radius: var(--r-xs);
+  background: var(--paper-2); color: var(--ink-1); border: 1px solid var(--line);
+  text-transform: lowercase;
+}
+.kind-context     { background: var(--kind-context-bg);      color: var(--kind-context-fg);      border-color: var(--kind-context-line); }
+.kind-decision    { background: var(--kind-decision-bg);     color: var(--kind-decision-fg);     border-color: var(--kind-decision-line); }
+.kind-anti-pattern{ background: var(--kind-anti-pattern-bg); color: var(--kind-anti-pattern-fg); border-color: var(--kind-anti-pattern-line); }
+.kind-pattern     { background: var(--kind-pattern-bg);      color: var(--kind-pattern-fg);      border-color: var(--kind-pattern-line); }
+.kind-question    { background: var(--kind-question-bg);     color: var(--kind-question-fg);     border-color: var(--kind-question-line); }
+
+/* category tag — earth accents as content labels */
+.tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.04em; text-transform: lowercase;
+  padding: 3px 9px 3px 8px; border-radius: var(--r-xs);
+  border: 1px solid var(--line);
+}
+.tag::before { content: "●"; font-size: 7px; }
+.tag.is-clay  { color: var(--c-clay);  background: var(--c-clay-soft);  border-color: color-mix(in oklch, var(--c-clay) 30%, var(--line)); }
+.tag.is-ochre { color: var(--c-ochre-deep); background: var(--c-ochre-soft); border-color: color-mix(in oklch, var(--c-ochre) 30%, var(--line)); }
+.tag.is-sand  { color: var(--c-sand-deep);  background: var(--c-sand-soft);  border-color: color-mix(in oklch, var(--c-sand) 30%, var(--line)); }
+.tag.is-moss  { color: var(--c-moss-deep);  background: var(--c-moss-soft);  border-color: color-mix(in oklch, var(--c-moss) 30%, var(--line)); }
+.tag.is-slate { color: var(--c-slate-deep); background: var(--c-slate-soft); border-color: color-mix(in oklch, var(--c-slate) 30%, var(--line)); }
+
+/* ── HINT — dashed "bind this" callout ──────────────────────── */
+.hint {
+  border: var(--rule-dashed); border-radius: var(--r-md);
+  padding: 12px 16px; font-size: var(--t-small); color: var(--ink-2);
+  font-family: var(--font-mono);
+}
+.hint code { color: var(--ink-0); }
+
+/* ── CARD ───────────────────────────────────────────────────── */
+.card {
+  border: var(--rule); border-radius: var(--r-md);
+  background: var(--paper-1); overflow: hidden;
+  transition: border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.card:hover { border-color: var(--line-strong); }
+
+/* ── PANEL (square, hairline — Deepwork) ────────────────────── */
+.panel { border: var(--rule); background: var(--paper-0); }
+
+/* ── code inline ────────────────────────────────────────────── */
+code {
+  font-family: var(--font-mono); font-size: 0.88em;
+  background: var(--paper-2); color: var(--ink-0);
+  padding: 1px 6px; border-radius: var(--r-xs); border: 1px solid var(--line);
+}
+
+/* ============================================================================
+   COMPONENT LAYER — completes the catalog the json-render registry renders.
+   These were documented in the openkt-demos components.md but missing from the
+   source openkt-pages.css (see bead op-xie). Built strictly from the tokens
+   above; candidates to upstream into masti-ai/openfield. No new colors.
+   ============================================================================ */
+
+/* ── Page + layout helpers ──────────────────────────────────── */
+.of-page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--sp-8) var(--sp-5);
+  display: flex; flex-direction: column; gap: var(--sp-6);
+}
+.stack { display: flex; flex-direction: column; gap: var(--sp-4); }
+.row   { display: flex; gap: var(--sp-4); flex-wrap: wrap; align-items: center; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-4); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
+@media (max-width: 640px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* ── Callout — left-bordered aside ──────────────────────────── */
+.callout {
+  border: var(--rule);
+  border-left: 3px solid var(--ink-3);
+  border-radius: var(--r-sm);
+  background: var(--paper-1);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--t-small);
+  color: var(--ink-1);
+}
+.callout-note    { border-left-color: var(--c-slate); }
+.callout-success { border-left-color: var(--good); background: var(--c-moss-soft); }
+.callout-warn    { border-left-color: var(--warn); background: var(--c-ochre-soft); }
+.callout-danger  { border-left-color: var(--error); background: var(--c-clay-soft); }
+.callout-accent  { border-left-color: var(--amber); background: var(--amber-soft); }
+
+/* ── Badge — status pill ────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: var(--r-pill);
+  background: var(--paper-2); color: var(--ink-1); border: 1px solid var(--line);
+}
+.badge-ok     { background: var(--c-moss-soft);  color: var(--c-moss-deep);  border-color: color-mix(in oklch, var(--c-moss) 30%, var(--line)); }
+.badge-warn   { background: var(--c-ochre-soft); color: var(--c-ochre-deep); border-color: color-mix(in oklch, var(--c-ochre) 30%, var(--line)); }
+.badge-danger { background: var(--c-clay-soft);  color: var(--c-clay-deep);  border-color: color-mix(in oklch, var(--c-clay) 30%, var(--line)); }
+.badge-info   { background: var(--c-slate-soft); color: var(--c-slate-deep); border-color: color-mix(in oklch, var(--c-slate) 30%, var(--line)); }
+.badge-accent { background: var(--amber-soft);   color: var(--amber-strong); border-color: var(--amber-line); }
+
+/* ── Stat tiles — KPI grid ──────────────────────────────────── */
+.stat-grid {
+  display: grid; gap: var(--sp-3);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+.stat {
+  border: var(--rule); border-radius: var(--r-md);
+  background: var(--paper-0); padding: var(--sp-4) var(--sp-5);
+}
+.stat-value {
+  font-family: var(--font-display); font-size: var(--t-display);
+  font-weight: 500; line-height: 1; letter-spacing: var(--tr-tight);
+  color: var(--ink-0);
+}
+.stat-accent .stat-value { color: var(--amber-strong); }
+.stat-label {
+  margin-top: var(--sp-2);
+  font-family: var(--font-mono); font-size: var(--t-micro);
+  letter-spacing: var(--tr-mono); text-transform: uppercase; color: var(--ink-2);
+}
+
+/* ── Table ──────────────────────────────────────────────────── */
+.of-table {
+  width: 100%; border-collapse: collapse;
+  font-size: var(--t-small);
+}
+.of-table th, .of-table td {
+  text-align: left; padding: var(--sp-2) var(--sp-3);
+  border-bottom: var(--rule);
+}
+.of-table th {
+  font-family: var(--font-mono); font-size: var(--t-micro); font-weight: 600;
+  letter-spacing: var(--tr-mono); text-transform: uppercase; color: var(--ink-2);
+}
+.of-table tbody tr:last-child td { border-bottom: none; }
+.of-table tbody tr:hover { background: var(--paper-1); }
+
+/* ── Callout/divider spacing tweaks for app context ─────────── */
+.divider-labeled { margin: var(--sp-4) 0; }
