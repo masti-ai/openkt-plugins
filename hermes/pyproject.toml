@@ -36,6 +36,11 @@ test = [
 # connection-pool reuse. Default install stays stdlib-only.
 fast = ["httpx>=0.27"]
 
+# Hermes auto-discovers pip-installed plugins via this entry point —
+# no symlink or manual drop-in needed after `pip install openkt-hermes`.
+[project.entry-points."hermes_agent.plugins"]
+openkt = "openkt_hermes.hermes_plugin"
+
 [project.urls]
 Homepage = "https://openkt.ai"
 Repository = "https://github.com/masti-ai/openkt-hermes"
