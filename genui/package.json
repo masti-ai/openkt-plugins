@@ -1,0 +1,11 @@
+{
+  "name": "openfield-genui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Open Field generative-UI track: a json-render component catalog and its consumers (standalone Vite demo + MCP Apps server). npm workspace so the one catalog has two consumers (DRY).",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "json-render-openfield",
+    "openfield-mcp-app"
+  ]
+}
