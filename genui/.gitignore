@@ -1,0 +1,5 @@
+# npm workspace — deps hoist to genui/node_modules; build output is per-project.
+node_modules/
+dist/
+*.log
+.playwright-mcp/

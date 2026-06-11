@@ -1,0 +1,43 @@
+{
+  "name": "openfield-mcp-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "MCP Apps (ext-apps) prototype: the Open Field generative-UI app served by a minimal openkt MCP server. One tool (show_report) returns a catalog-constrained JSON spec; a ui:// HTML resource renders it (json-render Renderer + Open Field registry) inside a sandboxed iframe over the ui/* postMessage bridge.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "npm run build:view && npm run build:server",
+    "build:view": "cross-env NODE_ENV=production INPUT=report.html vite build",
+    "build:server": "esbuild main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "serve": "node dist/main.js",
+    "serve:stdio": "node dist/main.js --stdio",
+    "smoke": "node scripts/smoke.mjs",
+    "start": "npm run build && npm run serve",
+    "dev": "cross-env NODE_ENV=development vite"
+  },
+  "dependencies": {
+    "@json-render/core": "^0.19.0",
+    "@json-render/react": "^0.19.0",
+    "@modelcontextprotocol/ext-apps": "1.7.4",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.2.3",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "cross-env": "^10.1.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.5",
+    "vite-plugin-singlefile": "^2.3.0"
+  }
+}
