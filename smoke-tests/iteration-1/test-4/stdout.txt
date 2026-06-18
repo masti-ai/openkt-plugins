@@ -1,0 +1,11 @@
+> **Drift flag:** You're currently on Pool 1 (CLI auth refactor). This prompt opens an orthogonal Pool 2 (Marketing landing page). I've added it to `DIRECTIONS.md` as a `SEED` — say "pivot" to switch focus, or "park it" to stay on Pool 1. Answering anyway:
+
+**Hero image placement — quick take:**
+
+Default placement is **right of the headline on desktop, stacked below on mobile** — that's the standard SaaS pattern (Linear, Stripe, Vercel) because the eye lands on the headline first, then the image reinforces. Put it **above the fold** so it's the first thing visible without scrolling.
+
+Two tradeoffs worth naming:
+- **Right-of-headline (image as proof)**: best when the image *shows the product* (UI screenshot, product mock). Headline does the work; image just confirms.
+- **Full-width background (image as mood)**: best when you're selling a feeling or category (devtools-for-creatives, founder-narrative). Risky — kills readability if not handled carefully.
+
+If you don't know which yet, that's the real question to settle before placement. What does the hero image *show* — the product, or the vibe?

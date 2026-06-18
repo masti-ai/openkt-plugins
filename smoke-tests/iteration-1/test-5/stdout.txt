@@ -1,0 +1,5 @@
+Top result content:
+
+> E2E verification 2026-05-15: MCP at api.openkt.ai/mcp works end-to-end from opencode, codex, claude-code
+
+(kind: `incident`, similarity 0.31 — note: the recall card itself rendered as "0 memories matched", but the JSON payload returned 1 result.)

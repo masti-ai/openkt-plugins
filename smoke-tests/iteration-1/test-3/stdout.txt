@@ -1,0 +1,8 @@
+- openkt:login
+- openkt:remember
+- openkt:recall
+- openkt:doctor
+- openkt:memory-doctor
+- openkt:memory-recall
+- openkt:direction-tracker
+- openkt:memory-curator
